@@ -132,3 +132,4 @@ dist
 # mp4 and more
 *.mp4
 *.pt
+venv/
