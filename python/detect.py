@@ -40,7 +40,7 @@ print(time2 - time1)
 #         print('++++++++++++++++++++++++++++++++++++++++++++++++++++')
 #     #print('-----------------------------------------------------')
 
-with open('result.txt', 'w', encoding='utf-8', newline='') as tfile:
+with open('results.txt', 'w', encoding='utf-8', newline='') as tfile:
     c = 0;
     for rone in results:
         c += 1
@@ -51,7 +51,7 @@ with open('result.txt', 'w', encoding='utf-8', newline='') as tfile:
             tfile.write(rstr)
 
 
-with open('result.csv', 'w', encoding='utf-8', newline='') as cfile:
+with open('results.csv', 'w', encoding='utf-8', newline='') as cfile:
     cwriter = csv.writer(cfile)
     c = 0;
     for rone in results:
@@ -71,7 +71,7 @@ with open('result.csv', 'w', encoding='utf-8', newline='') as cfile:
             ob = [c, id, x, y, w, h]
             cwriter.writerow(ob)
 
-with open('result2.csv', 'w', encoding='utf-8', newline='') as cfile:
+with open('results2.csv', 'w', encoding='utf-8', newline='') as cfile:
     cwriter = csv.writer(cfile)
     c = 0;
     for rone in results:

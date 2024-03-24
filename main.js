@@ -51,3 +51,5 @@ ipcMain.handle('python_analyze', async (event, data)=>{
             console.log(error);
         })
 })
+
+  
