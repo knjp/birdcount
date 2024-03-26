@@ -55,8 +55,8 @@ for i in range(m):
             J[i, 4] = np_data[1, 1]
             J[i, 5] = np_data[1, 2]
             J[i, 6] = np_data[1, 3]
-            print('Testring :' + str(np_data[0,1]) + ' < ' + str(np_data[1,1]))
-            print(J[i,])
+            #print('Testring :' + str(np_data[0,1]) + ' < ' + str(np_data[1,1]))
+            #print(J[i,])
         else:
             J[i, 1] = np_data[1, 1]
             J[i, 2] = np_data[1, 2]
@@ -65,11 +65,8 @@ for i in range(m):
             J[i, 4] = np_data[0, 1]
             J[i, 5] = np_data[0, 2]
             J[i, 6] = np_data[0, 3]
-            print('Best !!!! :' + str(np_data[0,1]) + ' > ' + str(np_data[1,1]))
-            print(J[i,])
-
-
-
+            #print('Best !!!! :' + str(np_data[0,1]) + ' > ' + str(np_data[1,1]))
+        #print('J[i,]: ' + str(J[i, 1:4]))
 
 figflag2 = 1
 figflag3 = 1
@@ -78,8 +75,8 @@ figflag4 = 1
 m2 = len(J)
 s1 = J[0, 1:4]
 s2 = J[0, 4:7]
-print(s1)
-print(s2)
+print('s1: ' + str(s1))
+print('s2: ' + str(s2))
 
 B[0, 0] = J[0, 2]
 B[0, 1] = J[0, 3]
@@ -96,6 +93,7 @@ for i in range(1, m2):
     L.append(d2)
     L.append(d3)
     L.append(d4)
+    #print('L: ' + str(L))
     loc = L.index(np.min(L))
 
     if loc == 0 or loc == 3:
@@ -121,9 +119,7 @@ for i in range(1, m2):
         else:
             B[i, 0] = J[i, 2]
             B[i, 1] = J[i, 3]
-
-#print(B)
-#print(C)
+    #print('B[[' + str(i) + ',]: ' + str(B[i, ]) + '   C[' + str(i) + ',]: ' + str(C[i,]))
 
 L3 = np.zeros(shape=(m, 4))
 t2 = np.arange(1, m + 1)
@@ -138,24 +134,19 @@ for i in range(len(t2)):
         L3[i, 2] = 1
     else:
         L3[i, 2] = 0
+    #print('L3[[' + str(i) + ',]: ' + str(L3[i, ]))
 
 
 from scipy.signal import medfilt
 
 L3[:, 3] = L3[:, 1] + L3[:, 2]
-#print('L3 : ----->')
-#print(L3)
-#L3[:, 3] = medfilt(L3[:, 3], kernel_size=5)
-#print('L3 : ----->')
-#print(L3)
 
 if figflag4 == 1:
     plt.figure(1)
-    #plt.plot(L3[:, 0], L3[:, 3], '.-', label="Total")
     plt.plot(L3[:, 0], L3[:, 3], '.-', label="Total")
     plt.legend()
     plt.xlabel("Time")
-    plt.ylabel("Bird Count with Median filter")
+    plt.ylabel("Number of Birds in video")
     plt.axis([0, m, 0, 3])
 
 if figflag2 == 1:
@@ -185,7 +176,7 @@ for i in range(m):
     if C[i, 0] > 0:
         c[i] = 1
         flag2 = 1
-    elif (i > 0 and C[i - 1, 0] > 0 and C[i, 0] == 0 and C[i - 1, 0] < 0.6 and C[i - 2, 1] < 0.5) and flag2 == 1:
+    elif (i > 0 and C[i - 1, 0] > 0 and C[i, 0] == 0 and C[i - 1, 0] < 0.2 and C[i - 2, 1] < 0.2) and flag2 == 1:
         c[i] = 1
         flag2 = 1
         C[i, :] = C[i - 1, :]
@@ -199,10 +190,6 @@ t = np.arange(1, m + 1)
 
 L[:, 0] = t
 
-# median_filter(B, size=3, cval=0, mode='constant')
-# median_filter(C, size=3, cval=0, mode='constant')
-
-#print(len(t))
 for i in range(len(t)):
     if B[i, 0] > 0:
         L[i, 1] = 1
@@ -214,12 +201,7 @@ for i in range(len(t)):
     else:
         L[i, 2] = 0
 
-# L[:, 1] = median_filter(L[:, 1], size=3, mode='constant')
-# L[:, 2] = median_filter(L[:, 2], size=3, mode='constant')
-
 L[:, 3] = L[:, 1] + L[:, 2]
-
-# median_filter(C, size=3, cval=0, mode='constant')
 
 t1 = []
 t1_str = []
@@ -247,7 +229,7 @@ if figflag3 == 1:
     plt.plot(L[:, 0], L[:, 3], '.-', label="Total")
     plt.legend()
     plt.xlabel("frame")
-    plt.ylabel("bird_count")
+    plt.ylabel("Bird Count")
     plt.axis([0, m, 0, 3])
     plt.show()
 

@@ -1,23 +1,30 @@
 from ultralytics import YOLO 
 import time
 import os
+import sys
 import csv
+import argparse
+
+videoname = 'video/abc.mp4'
+save_video = False
+
+parser = argparse.ArgumentParser(description='Detect birds from a video.')
+parser.add_argument('videofilename', help='Name of the video file', nargs='?', default=videoname)
+args = parser.parse_args()
 
 os.chdir('yolo')
 dirbase = './'
 detection_model = YOLO('model/best.pt')
-#source_path = 'video/abc.mp4'
-source_path = 'video/a_007.mp4'
+source_path = args.videofilename
 time1 = time.time()
-# source_path = "D:\\ultralytics-main\\data_detect\\03.mp4"
-results = detection_model.track(source=source_path, save=True,
+results = detection_model.track(source=source_path, save=save_video,
                                 #, device=0, save=False,
 #                                conf=float(values['detection_conf_thres']),
 #                                iou=float(values['detection_iou_thres']),
 #                                show=False,
                                 conf=0.25,
                                 iou=0.7,
-                                save_txt=True,
+                                save_txt=False,
                                 save_frames=False,
                                 persist=True,
 #                                save_crop=True
@@ -57,8 +64,8 @@ with open('results.csv', 'w', encoding='utf-8', newline='') as cfile:
     for rone in results:
         c += 1
         for object in rone.boxes:
-            print("object.numpy():")
-            print(object.xywh.cpu().numpy())
+            #print("object.numpy():")
+            #print(object.xywh.cpu().numpy())
             xywh = object.xywhn.cpu().numpy()
             x = xywh[0,0]
             y = xywh[0,1]
@@ -77,8 +84,6 @@ with open('results2.csv', 'w', encoding='utf-8', newline='') as cfile:
     for rone in results:
         c += 1
         for object in rone.boxes:
-            print("object.numpy():")
-            print(object.xyxyn.cpu().numpy())
             xyxy = object.xyxyn.cpu().numpy()
             x1 = xyxy[0,0]
             y1 = xyxy[0,1]
@@ -90,16 +95,3 @@ with open('results2.csv', 'w', encoding='utf-8', newline='') as cfile:
                 id = int(0)
             ob = [c, id, x1, y1, x2, y2]
             cwriter.writerow(ob)
-
-
-
-#     latest_folder_path_ex = get_latest_folder_contents(folder_path)
-#     is_dir = os.path.isdir(latest_folder_path_ex)
-#     if is_dir:
-#         txt_files_change(latest_folder_path_ex, source_path)
-#         results_len = len(results)
-#         bird_counts(latest_folder_path_ex, results_len)
-#         window.close()
-#         window = make_main()
-#     else:
-#         pass

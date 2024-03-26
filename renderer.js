@@ -4,7 +4,7 @@ information.innerText = `This app is using Chrome (v${versions.chrome()}), Node.
 bt_detect = document.getElementById('bt001')
 bt_detect.addEventListener('click', function(clickEvent){
     document.getElementById('ppython').innerHTML = ''
-   const message = window.runpython.send({"send_data":"send"})
+   const message = window.runpython.detect({"filename":"a_002.mp4"})
    const message2 = window.runpython.on("return_data", async(data)=>{
        document.getElementById('ppython').innerHTML = data
    })
@@ -17,4 +17,9 @@ bt_analyze.addEventListener('click', function(clickEvent){
    const message2 = window.runpython.on("return_data", async(data)=>{
        document.getElementById('ppython').innerHTML = data
    })
+})
+
+bt_quit = document.getElementById('btquit')
+bt_quit.addEventListener('click', function(clickEvent){
+    window.close()
 })

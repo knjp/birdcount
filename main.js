@@ -12,7 +12,7 @@ const createWindow = () => {
   })
 
   win.loadFile('index.html')
-  //win.webContents.openDevTools()
+  // win.webContents.openDevTools()
 }
 
 app.whenReady().then(() => {
@@ -29,10 +29,14 @@ const options = {
     mode: 'text',
     //pythonPath: __dirname,
     pythonOptions: ['-u'],
-    scriptPath: __dirname + '/python'
+    scriptPath: __dirname + '/python',
+    args:[]
 }
 
 ipcMain.handle('python_detect', async (event, data)=>{
+    //console.log('data: ' + str(data))
+    fname = 'video/' + data.filename
+    options.args = [fname]
     PythonShell.run('detect.py', options)
         .then((response)=>{
         event.sender.send("return_data", response);
@@ -51,5 +55,3 @@ ipcMain.handle('python_analyze', async (event, data)=>{
             console.log(error);
         })
 })
-
-  
