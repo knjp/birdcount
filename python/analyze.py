@@ -1,6 +1,7 @@
 import csv
 import pandas as pd
 import numpy as np
+from scipy.signal import medfilt 
 import matplotlib.pyplot as plt
 from datetime import timedelta
 
@@ -15,25 +16,21 @@ def distance(p1, p2):
 
 
 org_data = []
-with open('yolo/results.csv') as csvf:
+with open('yolo/results1.csv') as csvf:
     reader = csv.reader(csvf)
     org_data = [row for row in reader]
 
 df_data = pd.DataFrame(org_data)
 npdata = df_data.to_numpy()
-
-#print(npdata)
-#m = len(npdata)
 m = int(npdata[-1,0])
-
-print(m)
+#print(m)
 
 J = np.zeros(shape=(m, 7))
 J1 = np.zeros(shape=(m, 7))
 B = np.zeros(shape=(m, 2))
 C = np.zeros(shape=(m, 2))
 
-print(npdata[npdata[:,0] == '387'])
+#print(npdata[npdata[:,0] == '387'])
 for i in range(m):
     float_i = float(i + 1)
     np_data = npdata[npdata[:, 0] == str(i+1)]
@@ -55,8 +52,6 @@ for i in range(m):
             J[i, 4] = np_data[1, 1]
             J[i, 5] = np_data[1, 2]
             J[i, 6] = np_data[1, 3]
-            #print('Testring :' + str(np_data[0,1]) + ' < ' + str(np_data[1,1]))
-            #print(J[i,])
         else:
             J[i, 1] = np_data[1, 1]
             J[i, 2] = np_data[1, 2]
@@ -65,12 +60,10 @@ for i in range(m):
             J[i, 4] = np_data[0, 1]
             J[i, 5] = np_data[0, 2]
             J[i, 6] = np_data[0, 3]
-            #print('Best !!!! :' + str(np_data[0,1]) + ' > ' + str(np_data[1,1]))
-        #print('J[i,]: ' + str(J[i, 1:4]))
 
+figflag1 = 1
 figflag2 = 1
 figflag3 = 1
-figflag4 = 1
 
 m2 = len(J)
 s1 = J[0, 1:4]
@@ -137,11 +130,10 @@ for i in range(len(t2)):
     #print('L3[[' + str(i) + ',]: ' + str(L3[i, ]))
 
 
-from scipy.signal import medfilt
 
 L3[:, 3] = L3[:, 1] + L3[:, 2]
 
-if figflag4 == 1:
+if figflag1 == 1:
     plt.figure(1)
     plt.plot(L3[:, 0], L3[:, 3], '.-', label="Total")
     plt.legend()
@@ -203,6 +195,8 @@ for i in range(len(t)):
 
 L[:, 3] = L[:, 1] + L[:, 2]
 
+
+
 t1 = []
 t1_str = []
 for i in range(len(t)):
@@ -222,6 +216,21 @@ L1_pd = pd.DataFrame(L1[:, 1:4])
 L1_data_pd = pd.concat([t1_str_pd, L1_pd], axis=1)
 L1_data_pd.to_csv('yolo/birdstatus.csv', header=False, index=False)
 
+MF = np.zeros(shape=(m, 4))
+MF[:, 0] = t
+MF[:,1] = medfilt(L[:,1], kernel_size=9)
+MF[:,2] = medfilt(L[:,2], kernel_size=9)
+MF[:,3] = medfilt(L[:,3], kernel_size=9)
+
+print(L1)
+mm = len(L)
+print(mm)
+
+ex1 = np.sum(L[:,1])
+ex2 = np.sum(L[:,2])
+ex3 = np.sum(L[:,3])
+print(ex1/mm,ex2/mm,ex3/mm)
+
 if figflag3 == 1:
     plt.figure(3)
     plt.plot(L[:, 0], L[:, 1] + 0.03, '.-', label="bird1")
@@ -233,3 +242,13 @@ if figflag3 == 1:
     plt.axis([0, m, 0, 3])
     plt.show()
 
+#plt.figure(4)
+#plt.plot(MF[:, 0], MF[:, 1] + 0.03, '.-', label="bird1")
+#plt.plot(MF[:, 0], MF[:, 2], '.-', label="bird2")
+#plt.plot(MF[:, 0], MF[:, 3], '.-', label="Total")
+#plt.legend()
+#plt.xlabel("frame")
+#plt.ylabel("Bird Count")
+#plt.axis([0, m, 0, 3])
+#plt.show()
+#plt.pause(1)
