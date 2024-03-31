@@ -13,3 +13,7 @@ contextBridge.exposeInMainWorld('runpython', {
     ipcRenderer.once(channel, (event,data)=>func(data))
   }
 })
+
+contextBridge.exposeInMainWorld('electronAPI', {
+  selectFile: () => ipcRenderer.invoke('dialog:openFile')
+})

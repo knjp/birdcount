@@ -11,19 +11,30 @@
       http-equiv="X-Content-Security-Policy"
       content="default-src 'self'; script-src 'self'"
     />
-    <title>鳥!</title>
+    <link rel="stylesheet" href="node_modules/spectre.css/dist/spectre.min.css">
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <title>鳥検出プログラム</title>
   </head>
   <body>
-    <h1>小笠原!</h1>
+    <div id="ptitle">
+      <h1 id="pagename">
+       オガサワラカワラヒワ検出プログラム </h1>
+    </div>
     <center>
-      <video controls width="1024">
-        <source src="file:yolo/video/2023.05.15.mp4" />
-      </video>
-    <br>
-
-      <button id="bt001">検出</button>
-      <button id="bt002">解析</button>
-      <button id="btquit">終了</button>
+      <div id="videoregion">
+        <video controls id="mainvideo">
+          <source src="file:yolo/video/abc.mp4" />
+        </video>
+      </div>
+      <div>
+        <button type="button" id="btnVideo">Select file</button>
+        Video File: <strong id="videoFilePath">video/abc.mp4</strong>
+      </div>
+      <div id="controlbtns">
+        <button id="bt001">検出</button>
+        <button id="bt002">解析</button>
+        <button id="btquit">終了</button>
+      </div>
     </center>
     <center>
     <textarea id="ppython" rows="10" cols="80">

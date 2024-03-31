@@ -10,12 +10,13 @@
   "author": "Kiyoshi Nishikawa",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^29.1.4"
+    "electron": "^29.1.6"
   },
   "dependencies": {
     "fs": "^0.0.1-security",
     "https": "^1.0.0",
     "path": "^0.12.7",
-    "python-shell": "^5.0.0"
+    "python-shell": "^5.0.0",
+    "spectre.css": "^0.5.9"
   }
 }

@@ -1,0 +1,23 @@
+#ptitle {
+    text-align: center;
+    background-color:antiquewhite;
+}
+
+#videoregion {
+    width: 50%;
+}
+
+video#mainvideo {
+    width: 640px;
+}
+
+h1#pagename {
+    font-size: 2em;
+}
+
+button {
+    font-size: 1.4em;
+    width: 18%;
+    height: 50px;
+    margin: 2%;
+}
