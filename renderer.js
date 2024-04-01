@@ -3,9 +3,18 @@ information.innerText = `This app is using Chrome (v${versions.chrome()}), Node.
 
 const bt_videoSelect = document.getElementById('btnVideo')
 const filePathElement = document.getElementById('videoFilePath')
+
 bt_videoSelect.addEventListener('click', async () => {
     const videoFilePath = await window.electronAPI.selectFile()
     filePathElement.innerText = videoFilePath
+    const mainVideo = document.getElementById('mainVideo')
+    const videoSource = document.getElementById('mainVideoSource')
+    console.log(mainVideo.innerHTML)
+    mainVideo.pause()
+    videoSource.setAttribute('src', 'file:' + videoFilePath)
+    mainVideo.load()
+    mainVideo.play()
+    console.log(mainVideo.innerHTML)
 })
 
 

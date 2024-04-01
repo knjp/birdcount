@@ -222,7 +222,6 @@ MF[:,1] = medfilt(L[:,1], kernel_size=9)
 MF[:,2] = medfilt(L[:,2], kernel_size=9)
 MF[:,3] = medfilt(L[:,3], kernel_size=9)
 
-print(L1)
 mm = len(L)
 print(mm)
 
