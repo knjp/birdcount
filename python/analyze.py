@@ -68,8 +68,8 @@ figflag3 = 1
 m2 = len(J)
 s1 = J[0, 1:4]
 s2 = J[0, 4:7]
-print('s1: ' + str(s1))
-print('s2: ' + str(s2))
+#print('s1: ' + str(s1))
+#print('s2: ' + str(s2))
 
 B[0, 0] = J[0, 2]
 B[0, 1] = J[0, 3]
@@ -209,7 +209,7 @@ for i in range(len(t)):
 L1[:, 0] = t1
 #print(L1)
 L1[:, 1:4] = L[:, 1: 4]
-print(L1)
+#print(L1)
 
 t1_str_pd = pd.DataFrame(t1_str)
 L1_pd = pd.DataFrame(L1[:, 1:4])
@@ -223,12 +223,20 @@ MF[:,2] = medfilt(L[:,2], kernel_size=9)
 MF[:,3] = medfilt(L[:,3], kernel_size=9)
 
 mm = len(L)
-print(mm)
+tlen = mm /(10 * 60)
+print('Number of frames: ' + str(mm) + '(' + "{:.3f}".format(tlen) + 'm) <br>' )
+
+#print(  'Exec  Time: ' + "{:.3f}".format(dtime) + ' sec' + '<br>')
 
 ex1 = np.sum(L[:,1])
 ex2 = np.sum(L[:,2])
 ex3 = np.sum(L[:,3])
-print(ex1/mm,ex2/mm,ex3/mm)
+print('')
+
+print("Bird1: " + "{:.3f}".format(ex1/mm*100) + '%<br>')
+print("Bird2: " + "{:.3f}".format(ex2/mm*100) + '%<br>')
+print("Total: " + "{:.3f}".format(ex3/mm*100) + '%')
+#      ,ex2/mm,ex3/mm)
 
 if figflag3 == 1:
     plt.figure(3)
@@ -239,7 +247,7 @@ if figflag3 == 1:
     plt.xlabel("frame")
     plt.ylabel("Bird Count")
     plt.axis([0, m, 0, 3])
-    plt.show()
+#    plt.show()
 
 #plt.figure(4)
 #plt.plot(MF[:, 0], MF[:, 1] + 0.03, '.-', label="bird1")

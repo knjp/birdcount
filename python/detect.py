@@ -74,9 +74,10 @@ time2 = time.time()
 dt_end = datetime.datetime.now()
 dtime = time2 - time1
 
-print('\nStart Time: ' + str(dt_start))
-print(  'End   Time: ' + str(dt_end))
-print(  'Exec  Time: ' + str(dtime) + ' sec')
+print('<br>')
+print('Start Time: ' + str(dt_start) + '<br>')
+print(  'End   Time: ' + str(dt_end) + '<br>')
+print(  'Exec  Time: ' + "{:.3f}".format(dtime) + ' sec' + '<br>')
 
 exit(0)
 
