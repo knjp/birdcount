@@ -48,21 +48,30 @@ for rone in results:
     cstr = '++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n' + 'c = ' + str(c) + '\n'
     resfile.write(cstr)
     for object in rone.boxes:
-        xywh = object.xywhn.cpu().numpy()
-        x = xywh[0,0]; y = xywh[0,1]
-        w = xywh[0,2]; h = xywh[0,3]
-        xyxy = object.xyxyn.cpu().numpy()
+        xywhn = object.xywhn.cpu().numpy()
+        xn = xywhn[0,0]; yn = xywhn[0,1]
+        wn = xywhn[0,2]; hn = xywhn[0,3]
+        xyxyn = object.xyxyn.cpu().numpy()
+        xn1 = xyxyn[0,0]; yn1 = xyxyn[0,1]
+        xn2 = xyxyn[0,2]; yn2 = xyxyn[0,3]
+
+        xyw = object.xywh.cpu().numpy()
+        x = xyw[0,0]; y = xyw[0,1]
+        w = xyw[0,2]; h = xyw[0,3]
+        xyxy = object.xyxy.cpu().numpy()
         x1 = xyxy[0,0]; y1 = xyxy[0,1]
         x2 = xyxy[0,2]; y2 = xyxy[0,3]
+
+
         if object.id != None:
             id = int(object.id.cpu().numpy()[0])
         else:
             id = 0
         rstr = str(object) + '\n'
         resfile.write(rstr)
-        ob = [c, id, x, y, w, h]
+        ob = [c, id, xn, yn, wn, hn, xn1, yn1, xn2, yn2]
         cwriter1.writerow(ob)
-        ob = [c, id, x1, y1, x2, y2]
+        ob = [c, id, x, y, w, h, x1, y1, x2, y2]
         cwriter2.writerow(ob)
 
 

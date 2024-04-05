@@ -4,6 +4,9 @@ import numpy as np
 from scipy.signal import medfilt 
 import matplotlib.pyplot as plt
 from datetime import timedelta
+from matplotlib import cm
+from matplotlib import colormaps as cm2
+from PIL import Image
 
 def distance(p1, p2):
     x1 = p1[0]
@@ -16,7 +19,7 @@ def distance(p1, p2):
 
 
 org_data = []
-with open('yolo/results1.csv') as csvf:
+with open('yolo/results2.csv') as csvf:
     reader = csv.reader(csvf)
     org_data = [row for row in reader]
 
@@ -133,7 +136,7 @@ for i in range(len(t2)):
 
 L3[:, 3] = L3[:, 1] + L3[:, 2]
 
-if figflag1 == 1:
+if figflag1 == 5:
     plt.figure(1)
     plt.plot(L3[:, 0], L3[:, 3], '.-', label="Total")
     plt.legend()
@@ -141,12 +144,76 @@ if figflag1 == 1:
     plt.ylabel("Number of Birds in video")
     plt.axis([0, m, 0, 3])
 
+xy = np.zeros((1920, 1080), int)
+blen = len(B)
+h5 = 2
+w5 = h5 * 3
+for i in range(blen):
+    x0 = int(B[i, 0])
+    y0 = int(B[i, 1])
+    xy[x0-w5:x0+w5, y0-h5:y0+h5] += 1
+    x1 = int(C[i, 0])
+    y1 = int(C[i, 1])
+    xy[x1-w5:x1+w5, y1-h5:y1+h5] += 1
+
+xy[0, 0] = 0
+
+x00, y00 = np.arange(0,1920, 1), np.arange(0,1080, 1)
+mx, my = np.meshgrid(x00, y00)
+z = xy[mx,my]
+
+#xpos = mx.ravel()
+#ypos = my.ravel()
+#zpos = 0
+#dx = dy = np.ones_like(zpos)
+#dz = z.ravel()
+
+plt.figure(5)
+plt.scatter(mx, my, s=500, c=z, cmap='Blues')
+plt.show()
+#print(mx.shape)
+
+exit(0)
+
+ax = plt.figure(4).add_subplot(projection='3d')
+ax.plot_surface(mx, 1080-my, z, cmap= cm.coolwarm)
+#ax.set(zlim=(0,30))
+
+heatmap0 = np.uint8(xy/np.max(xy) * 255)
+heatmap = heatmap0.transpose()
+heatmap[:,1] = heatmap[:,1]
+hh = Image.fromarray(heatmap)
+hh.save('test50.png')
+
+
+img = Image.open('yolo/frame_001.png')
+jet = cm2.get_cmap("jet")
+jet_colors = jet(np.arange(256))[:,:3]
+jet_heatmap=jet_colors[heatmap]
+
+jet_heatmap = Image.fromarray(np.uint8(jet_heatmap))
+
+jet_heatmap = jet_heatmap.resize((1920, 1080))
+jet_heatmap = np.asarray(jet_heatmap)
+
+superimposed = jet_heatmap * 200 + img
+superimposed = Image.fromarray(np.uint8(superimposed))
+
+superimposed.save('test.png')
+
+
+
 if figflag2 == 1:
     plt.figure(2)
-    plt.plot(B[:, 0], 1 - B[:, 1], '.', label="bird1")
-    plt.plot(C[:, 0], 1 - C[:, 1], '.', label="bird2")
+    #plt.plot(B[:, 0], 1 - B[:, 1], '.', label="bird1")
+    #plt.plot(C[:, 0], 1 - C[:, 1], '.', label="bird2")
+    plt.plot(B[:, 0], 1024 - B[:, 1], '.', label="bird1")
+    plt.plot(C[:, 0], 1024 - C[:, 1], '.', label="bird2")
     plt.legend()
-    plt.axis([0, 1, 0, 1])
+    plt.axis([0, 1920, 0, 1024])
+
+plt.show()
+exit(0)
 
 flag1 = 0
 b = {}
@@ -247,7 +314,7 @@ if figflag3 == 1:
     plt.xlabel("frame")
     plt.ylabel("Bird Count")
     plt.axis([0, m, 0, 3])
-#    plt.show()
+    plt.show()
 
 #plt.figure(4)
 #plt.plot(MF[:, 0], MF[:, 1] + 0.03, '.-', label="bird1")

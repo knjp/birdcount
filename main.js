@@ -71,3 +71,8 @@ app.whenReady().then(() => {
     }
   })
 })
+
+
+app.on('activate', () => {
+  setInterval('printTime()', 1000)
+})
