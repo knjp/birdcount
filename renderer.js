@@ -32,6 +32,20 @@ const bt_detect = document.getElementById('bt001')
 const bt_analyze = document.getElementById('bt002')
 const bt_quit = document.getElementById('btquit')
 
+function buttonDisable() {
+    bt_detect.disabled = true
+    bt_analyze.disabled = true
+    bt_quit.disabled = true
+    bt_videoSelect.disabled = true
+}
+
+function buttonEnable() {
+    bt_detect.disabled = false
+    bt_analyze.disabled = false
+    bt_quit.disabled = false
+    bt_videoSelect.disabled = false
+}
+
 bt_detect.addEventListener('click', function(clickEvent){
     bt_detect.disabled = true
     bt_analyze.disabled = true
@@ -52,10 +66,14 @@ bt_detect.addEventListener('click', function(clickEvent){
 })
 
 bt_analyze.addEventListener('click', function(clickEvent){
+    buttonDisable()
+    var processtime = setInterval(printTime, 1000)
     document.getElementById('panalyze').innerHTML = ''
     const message = window.runpython.analyze({"send_data":"analyze"})
     const message2 = window.runpython.on("return_data", async(data)=>{
        document.getElementById('panalyze').innerHTML = '<pre>' + data + '</pre>'
+        buttonEnable()
+        clearInterval(processtime)
    })
 })
 
