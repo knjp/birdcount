@@ -30,6 +30,10 @@
         <button type="button" id="btnVideo">Select file</button>
         Video File: <strong id="videoFilePath">video/abc.mp4</strong>
       </div>
+    <div id="time">
+      <p id="ctime">00:00:00</p>
+      <p id="ptime"> 0 s </p>
+    </div>
       <div id="controlbtns">
         <button id="bt001">検出</button>
         <button id="bt002">解析</button>
@@ -37,11 +41,12 @@
       </div>
     </center>
 
-    <center>
-    <div id="time">
-      <p id="ctime">00:00:00</p>
-      <p id="ptime"> 0 s </p>
+    <div align="center">
+      <img id="resultFig1"  src="" alt="fig1">
+      <img id="resultFig2"  src="" alt="fig2">
     </div>
+
+    <center>
     <div id="detect_results">
       <p id="pdetect"></p>
     </div>
@@ -49,7 +54,11 @@
       <p id="panalyze">Select the process</p>
     </div>
     </center>
-    <p id="info"></p>
+
+    <div align="center">
+      <p id="info"></p>
+    </div>
+
   </body>
   <script src="./renderer.js"></script>
 </html>

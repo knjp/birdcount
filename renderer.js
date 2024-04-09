@@ -4,6 +4,16 @@ information.innerText = `This app is using Chrome (v${versions.chrome()}), Node.
 const bt_videoSelect = document.getElementById('btnVideo')
 const filePathElement = document.getElementById('videoFilePath')
 
+function setMainVideo(videoFilePath) {
+    filePathElement.innerText = videoFilePath
+    const mainVideo = document.getElementById('mainVideo')
+    const videoSource = document.getElementById('mainVideoSource')
+    mainVideo.pause()
+    videoSource.setAttribute('src', 'file:' + videoFilePath)
+    mainVideo.load()
+    mainVideo.play()
+}
+
 bt_videoSelect.addEventListener('click', async () => {
     const videoFilePath = await window.electronAPI.selectFile()
     filePathElement.innerText = videoFilePath
@@ -47,33 +57,43 @@ function buttonEnable() {
 }
 
 bt_detect.addEventListener('click', function(clickEvent){
-    bt_detect.disabled = true
-    bt_analyze.disabled = true
-    bt_quit.disabled = true
-    bt_videoSelect.disabled = true
+    buttonDisable()
+    ptime = 0
     var processtime = setInterval(printTime, 1000)
     videoFileName = document.getElementById('videoFilePath').innerText
     document.getElementById('pdetect').innerHTML = 'Now detecting from ' + videoFileName
     const message = window.runpython.detect({"filename": videoFileName})
     const message2 = window.runpython.on("return_data", async(data)=>{
-        document.getElementById('pdetect').innerHTML = '<pre>' + data + '</pre>'
-        bt_detect.disabled = false
-        bt_analyze.disabled = false
-        bt_quit.disabled = false
-        bt_videoSelect.disabled = false
+        dstrs = String(data).split(',')
+        console.log('hello')
+        console.log(dstrs)
+        datas = dstrs[0] + '<br>' + dstrs[1] + '<br>' + dstrs[2] + '<br>' + dstrs[3]
+        document.getElementById('pdetect').innerHTML = '<pre>' + datas + '</pre>'
+        buttonEnable()
         clearInterval(processtime)
     })
 })
 
 bt_analyze.addEventListener('click', function(clickEvent){
+    const img1 = document.getElementById('resultFig1')
+    const img2 = document.getElementById('resultFig2')
+    img1.setAttribute('src', '')
+    img2.setAttribute('src', '')
     buttonDisable()
+    ptime = 0
     var processtime = setInterval(printTime, 1000)
     document.getElementById('panalyze').innerHTML = ''
     const message = window.runpython.analyze({"send_data":"analyze"})
     const message2 = window.runpython.on("return_data", async(data)=>{
-       document.getElementById('panalyze').innerHTML = '<pre>' + data + '</pre>'
+        dataStr = String(data)
+        strs = dataStr.split(',')
+        stats = strs[2] + '<br>' + strs[3] + '<br>'  + strs[4] + '<br>' + strs[5]
+        document.getElementById('panalyze').innerHTML = '<pre>' + stats + '</pre>'
         buttonEnable()
         clearInterval(processtime)
+        img1.setAttribute('src', 'yolo/resultsFig2.png?' + new Date().getTime())
+        img2.setAttribute('src', 'yolo/resultsFig3.png?' + new Date().getTime())
+        setMainVideo(strs[0])
    })
 })
 

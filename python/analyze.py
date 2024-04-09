@@ -19,10 +19,13 @@ def distance(p1, p2):
 
 
 org_data = []
-with open('yolo/results2.csv') as csvf:
+with open('yolo/results.csv') as csvf:
+    videoFileName = csvf.readline()
     reader = csv.reader(csvf)
     org_data = [row for row in reader]
 
+fvideo = videoFileName.split()
+print(fvideo[2] + ",")
 df_data = pd.DataFrame(org_data)
 npdata = df_data.to_numpy()
 m = int(npdata[-1,0])
@@ -71,8 +74,6 @@ figflag3 = 1
 m2 = len(J)
 s1 = J[0, 1:4]
 s2 = J[0, 4:7]
-#print('s1: ' + str(s1))
-#print('s2: ' + str(s2))
 
 B[0, 0] = J[0, 2]
 B[0, 1] = J[0, 3]
@@ -89,7 +90,6 @@ for i in range(1, m2):
     L.append(d2)
     L.append(d3)
     L.append(d4)
-    #print('L: ' + str(L))
     loc = L.index(np.min(L))
 
     if loc == 0 or loc == 3:
@@ -133,7 +133,6 @@ for i in range(len(t2)):
     #print('L3[[' + str(i) + ',]: ' + str(L3[i, ]))
 
 
-
 L3[:, 3] = L3[:, 1] + L3[:, 2]
 
 if figflag1 == 5:
@@ -143,64 +142,83 @@ if figflag1 == 5:
     plt.xlabel("Time")
     plt.ylabel("Number of Birds in video")
     plt.axis([0, m, 0, 3])
+    plt.savefig('yolo/resultsFig1.png')
+
+
+figflag5 = False;
 
 xy = np.zeros((1920, 1080), int)
 blen = len(B)
-h5 = 2
+h5 = 1
 w5 = h5 * 3
 for i in range(blen):
     x0 = int(B[i, 0])
     y0 = int(B[i, 1])
-    xy[x0-w5:x0+w5, y0-h5:y0+h5] += 1
+    #xy[x0-w5:x0+w5, y0-h5:y0+h5] += 1
+    xy[x0, y0] += 1
     x1 = int(C[i, 0])
     y1 = int(C[i, 1])
-    xy[x1-w5:x1+w5, y1-h5:y1+h5] += 1
-
-xy[0, 0] = 0
-
-x00, y00 = np.arange(0,1920, 1), np.arange(0,1080, 1)
-mx, my = np.meshgrid(x00, y00)
-z = xy[mx,my]
-
-#xpos = mx.ravel()
-#ypos = my.ravel()
-#zpos = 0
-#dx = dy = np.ones_like(zpos)
-#dz = z.ravel()
-
-plt.figure(5)
-plt.scatter(mx, my, s=500, c=z, cmap='Blues')
-plt.show()
-#print(mx.shape)
-
-exit(0)
-
-ax = plt.figure(4).add_subplot(projection='3d')
-ax.plot_surface(mx, 1080-my, z, cmap= cm.coolwarm)
-#ax.set(zlim=(0,30))
-
-heatmap0 = np.uint8(xy/np.max(xy) * 255)
-heatmap = heatmap0.transpose()
-heatmap[:,1] = heatmap[:,1]
-hh = Image.fromarray(heatmap)
-hh.save('test50.png')
+    #xy[x1-w5:x1+w5, y1-h5:y1+h5] += 1
+    xy[x1, y1] += 1
 
 
-img = Image.open('yolo/frame_001.png')
-jet = cm2.get_cmap("jet")
-jet_colors = jet(np.arange(256))[:,:3]
-jet_heatmap=jet_colors[heatmap]
+if figflag5 == True:
+    xy[0, 0] = 0
+    x00, y00 = np.arange(0,1920, 1), np.arange(0,1080, 1)
+    mx, my = np.meshgrid(x00, y00)
+    z = xy[mx,my]
+    #xpos = mx.ravel()
+    #ypos = my.ravel()
+    #zpos = 0
+    #dx = dy = np.ones_like(zpos)
+    #dz = z.ravel()
+    plt.figure(5)
+    plt.scatter(mx, my, s=1, c=z)
+    plt.show()
+    plt.savefig('yolo/resultsFig5.png')
+    exit(0)
 
-jet_heatmap = Image.fromarray(np.uint8(jet_heatmap))
 
-jet_heatmap = jet_heatmap.resize((1920, 1080))
-jet_heatmap = np.asarray(jet_heatmap)
+figheatmap = True
+if figheatmap:
+    xy[0, 0] = 0
+    x00, y00 = np.arange(0,1920, 1), np.arange(0,1080, 1)
+    mx, my = np.meshgrid(x00, y00)
+    maxz = np.max(xy) 
+    #xy = (xy/maxz) * 255
+    #amax  = np.unravel_index(np.argmax(xy, axis=None), xy.shape) 
+    #print(amax)
+    z = xy[mx,my]
+    z2 = np.where(z > 0.1, 100, 0)
+    #print(np.argwhere(z> 1))
 
-superimposed = jet_heatmap * 200 + img
-superimposed = Image.fromarray(np.uint8(superimposed))
+    ax = plt.figure(4).add_subplot(projection='3d')
+    #ax.plot_surface(mx, 1080-my, z, cmap= cm.coolwarm)
+    ax.plot_surface(mx, 1080-my, z2, cmap=cm.binary)
+    plt.savefig('yolo/resultsFig4.png')
+    #ax.set(zlim=(0,1))
 
-superimposed.save('test.png')
+    xy2 = np.where(xy > 0.0, 200, 0)
+    #heatmap0 = np.uint8(xy/np.max(xy) * 255)
+    heatmap0 = np.uint8(xy2)
+    heatmap = heatmap0.transpose()
+    #heatmap[:,1] = heatmap[:,1]
+    hmimage = Image.fromarray(heatmap)
+    hmimage.save('yolo/heatmap.png')
 
+    img = Image.open('yolo/frame_001.png')
+    jet = cm2.get_cmap("jet")
+    jet_colors = jet(np.arange(256))[:,:3]
+    jet_heatmap=jet_colors[heatmap]
+    hmmax = np.max(jet_heatmap)
+    jhm = jet_heatmap/hmmax * 255
+    jet_heatmap = Image.fromarray(np.uint8(jhm))
+    jet_heatmap = jet_heatmap.resize((1920, 1080))
+    jet_heatmap = np.asarray(jet_heatmap)
+
+    superimposed = jet_heatmap * .2 + img
+    superimposed = Image.fromarray(np.uint8(superimposed))
+    superimposed.save('yolo/superimposed.png')
 
 
 if figflag2 == 1:
@@ -211,9 +229,7 @@ if figflag2 == 1:
     plt.plot(C[:, 0], 1024 - C[:, 1], '.', label="bird2")
     plt.legend()
     plt.axis([0, 1920, 0, 1024])
-
-plt.show()
-exit(0)
+    plt.savefig('yolo/resultsFig2.png')
 
 flag1 = 0
 b = {}
@@ -262,8 +278,6 @@ for i in range(len(t)):
 
 L[:, 3] = L[:, 1] + L[:, 2]
 
-
-
 t1 = []
 t1_str = []
 for i in range(len(t)):
@@ -274,9 +288,7 @@ for i in range(len(t)):
     t1_str.append(t_str)
 
 L1[:, 0] = t1
-#print(L1)
 L1[:, 1:4] = L[:, 1: 4]
-#print(L1)
 
 t1_str_pd = pd.DataFrame(t1_str)
 L1_pd = pd.DataFrame(L1[:, 1:4])
@@ -291,7 +303,7 @@ MF[:,3] = medfilt(L[:,3], kernel_size=9)
 
 mm = len(L)
 tlen = mm /(10 * 60)
-print('Number of frames: ' + str(mm) + '(' + "{:.3f}".format(tlen) + 'm) <br>' )
+print('Number of frames: ' + str(mm) + '(' + "{:.3f}".format(tlen) + 'm)' )
 
 #print(  'Exec  Time: ' + "{:.3f}".format(dtime) + ' sec' + '<br>')
 
@@ -300,8 +312,8 @@ ex2 = np.sum(L[:,2])
 ex3 = np.sum(L[:,3])
 print('')
 
-print("Bird1: " + "{:.3f}".format(ex1/mm*100) + '%<br>')
-print("Bird2: " + "{:.3f}".format(ex2/mm*100) + '%<br>')
+print("Bird1: " + "{:.3f}".format(ex1/mm*100) + '%')
+print("Bird2: " + "{:.3f}".format(ex2/mm*100) + '%')
 print("Total: " + "{:.3f}".format(ex3/mm*100) + '%')
 #      ,ex2/mm,ex3/mm)
 
@@ -314,7 +326,8 @@ if figflag3 == 1:
     plt.xlabel("frame")
     plt.ylabel("Bird Count")
     plt.axis([0, m, 0, 3])
-    plt.show()
+    plt.savefig('yolo/resultsFig3.png')
+#    plt.show()
 
 #plt.figure(4)
 #plt.plot(MF[:, 0], MF[:, 1] + 0.03, '.-', label="bird1")

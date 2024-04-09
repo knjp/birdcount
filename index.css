@@ -47,3 +47,7 @@ p#info {
     text-decoration: double;
     background-color: honeydew;
 }
+
+p#ctime, p#ptime, p#pdetect, p#panalyze {
+    display: inline;
+}

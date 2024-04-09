@@ -36,13 +36,18 @@ results = detection_model.track(source=source_path, save=save_video,
                                 )
 
 
-csv1 = open('results1.csv', 'w', encoding='utf-8', newline='')
-csv2 = open('results2.csv', 'w', encoding='utf-8', newline='')
+csv1 = open('results.csv', 'w', encoding='utf-8', newline='')
+#csv2 = open('results2.csv', 'w', encoding='utf-8', newline='')
 resfile = open('all-results.txt', 'w', encoding='utf-8', newline='')
 
 cwriter1 = csv.writer(csv1)
-cwriter2 = csv.writer(csv2)
+#cwriter2 = csv.writer(csv2)
 c = 0
+#source_path = args.videofilename
+infoVideoFile = "Video File: " + source_path
+resfile.write(infoVideoFile + '\n')
+csv1.write(infoVideoFile + '\n')
+
 for rone in results:
     c += 1
     cstr = '++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n' + 'c = ' + str(c) + '\n'
@@ -69,24 +74,23 @@ for rone in results:
             id = 0
         rstr = str(object) + '\n'
         resfile.write(rstr)
-        ob = [c, id, xn, yn, wn, hn, xn1, yn1, xn2, yn2]
-        cwriter1.writerow(ob)
         ob = [c, id, x, y, w, h, x1, y1, x2, y2]
-        cwriter2.writerow(ob)
+        cwriter1.writerow(ob)
+        #ob = [c, id, xn, yn, wn, hn, xn1, yn1, xn2, yn2]
+        #cwriter1.writerow(ob)
 
 
 csv1.close()
-csv2.close()
+#csv2.close()
 resfile.close()
 
 time2 = time.time()
 dt_end = datetime.datetime.now()
 dtime = time2 - time1
 
-print('<br>')
-print('Start Time: ' + str(dt_start) + '<br>')
-print(  'End   Time: ' + str(dt_end) + '<br>')
-print(  'Exec  Time: ' + "{:.3f}".format(dtime) + ' sec' + '<br>')
+print('Start Time: ' + str(dt_start))
+print(  'End   Time: ' + str(dt_end))
+print(  'Exec  Time: ' + "{:.3f}".format(dtime) + ' sec')
 
 exit(0)
 
