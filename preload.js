@@ -15,5 +15,6 @@ contextBridge.exposeInMainWorld('runpython', {
 })
 
 contextBridge.exposeInMainWorld('electronAPI', {
-  selectFile: () => ipcRenderer.invoke('dialog:openFile')
+  selectLoadVideoFile: () => ipcRenderer.invoke('dialog:openVideoFile'),
+  saveCSVFile: () => ipcRenderer.invoke('dialog:saveCSVFile')
 })

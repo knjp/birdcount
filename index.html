@@ -15,45 +15,43 @@
     <link rel="stylesheet" type="text/css" href="index.css">
     <title>鳥検出プログラム</title>
   </head>
-  <body>
+  <body align="center">
     <div id="ptitle">
       <h1 id="pagename">
        オガサワラカワラヒワ検出プログラム </h1>
     </div>
-    <center>
-      <div id="videoregion">
-        <video controls autoplay id="mainVideo">
-          <source src="file:yolo/video/abc.mp4" id="mainVideoSource" />
-        </video>
-      </div>
-      <div>
-        <button type="button" id="btnVideo">Select file</button>
-        Video File: <strong id="videoFilePath">video/abc.mp4</strong>
-      </div>
-    <div id="time">
-      <p id="ctime">00:00:00</p>
-      <p id="ptime"> 0 s </p>
+    <div align="center" id="videoregion">
+      <video controls autoplay id="mainVideo">
+        <source src="file:yolo/video/abc.mp4" id="mainVideoSource" />
+      </video>
     </div>
-      <div id="controlbtns">
-        <button id="bt001">検出</button>
-        <button id="bt002">解析</button>
-        <button id="btquit">終了</button>
-      </div>
-    </center>
-
-    <div align="center">
+    <div id="resultFigs" align="center">
       <img id="resultFig1"  src="" alt="fig1">
       <img id="resultFig2"  src="" alt="fig2">
     </div>
+    <div>
+      <button type="button" id="btnVideo">Select video</button>
+      Video File: <strong id="videoFilePath">video/abc.mp4</strong>
+    </div>
+    <div id="time">
+      Time: <p id="ctime">00:00:00</p> Processing Time:
+      <p id="ptime"> 0 s </p>
+    </div>
+    <div id="controlbtns">
+      <button tyoe="button" id="bt001">検出</button>
+      <button type="button" id="bt002">解析</button>
+      <button type="button" id="btnCSV" >Download</button>
+      <button type="button" id="btquit">終了</button>
+    </div>
 
-    <center>
-    <div id="detect_results">
+    <div align="center">
+    <div id="detect_results" align="center">
       <p id="pdetect"></p>
     </div>
-    <div id="analyze_results">
+    <div id="analyze_results" align="center">
       <p id="panalyze">Select the process</p>
     </div>
-    </center>
+    </div>
 
     <div align="center">
       <p id="info"></p>

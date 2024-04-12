@@ -4,8 +4,7 @@
 }
 
 #videoregion {
-    width: 50%;
-    align-items: center;
+    align-self: center;
 }
 
 video#mainVideo {
@@ -24,12 +23,12 @@ button {
 }
 
 #detect_results {
-    width:80%;
+    width:60%;
     align-self: center;
 }
 
 #analyze_results {
-    width: 80%;
+    width: 60%;
     align-self: auto;
 }
 
@@ -50,4 +49,5 @@ p#info {
 
 p#ctime, p#ptime, p#pdetect, p#panalyze {
     display: inline;
+    color:crimson
 }

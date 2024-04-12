@@ -225,10 +225,12 @@ if figflag2 == 1:
     plt.figure(2)
     #plt.plot(B[:, 0], 1 - B[:, 1], '.', label="bird1")
     #plt.plot(C[:, 0], 1 - C[:, 1], '.', label="bird2")
-    plt.plot(B[:, 0], 1024 - B[:, 1], '.', label="bird1")
-    plt.plot(C[:, 0], 1024 - C[:, 1], '.', label="bird2")
+    plt.plot(B[:, 0], 1024 - B[:, 1], '.', label="Bird1")
+    plt.plot(C[:, 0], 1024 - C[:, 1], '.', label="Bird2")
     plt.legend()
     plt.axis([0, 1920, 0, 1024])
+    plt.xlabel('Width (pixel)')
+    plt.ylabel('Height (pixel)')
     plt.savefig('yolo/resultsFig2.png')
 
 flag1 = 0
@@ -309,23 +311,37 @@ print('Number of frames: ' + str(mm) + '(' + "{:.3f}".format(tlen) + 'm)' )
 
 ex1 = np.sum(L[:,1])
 ex2 = np.sum(L[:,2])
-ex3 = np.sum(L[:,3])
-print('')
+#ex3 = np.sum(L[:,3])
+ex3 = np.where(L[:,3] > 0)[0]
+len_ex3 = len(ex3)
 
-print("Bird1: " + "{:.3f}".format(ex1/mm*100) + '%')
-print("Bird2: " + "{:.3f}".format(ex2/mm*100) + '%')
-print("Total: " + "{:.3f}".format(ex3/mm*100) + '%')
+ratio1 =  ex1/mm*100
+ratio2 =  ex2/mm*100
+ratioTotal =  len_ex3/mm*100
+
+print("Bird1: " + "{:.2f}".format(ratio1) + '%')
+print("Bird2: " + "{:.2f}".format(ratio2) + '%')
+#print("Total: " + "{:.3f}".format(ex3/mm*100) + '%')
+print("Total: " + "{:.2f}".format(ratioTotal) + '%')
 #      ,ex2/mm,ex3/mm)
 
 if figflag3 == 1:
     plt.figure(3)
-    plt.plot(L[:, 0], L[:, 1] + 0.03, '.-', label="bird1")
-    plt.plot(L[:, 0], L[:, 2], '.-', label="bird2")
-    plt.plot(L[:, 0], L[:, 3], '.-', label="Total")
+    plt.plot(L[:, 0], L[:, 1] + 0.03, '-', label="Bird1: " + "{:.2f}".format(ratio1) + "%", linewidth=1.0)
+    plt.plot(L[:, 0], L[:, 2], '-', label="Bird2: " + "{:.2f}".format(ratio2) + "%", linewidth=1.0)
+    plt.plot(L[:, 0], L[:, 3] + 0.05, '-', label="Total: " + "{:.2f}".format(ratioTotal) + "%", linewidth=0.5)
     plt.legend()
-    plt.xlabel("frame")
+    plt.xlabel("Time [min]")
     plt.ylabel("Bird Count")
     plt.axis([0, m, 0, 3])
+    plt.yticks(np.arange(0, 3, 1))
+    if mm/600 < 10:
+        xticks = np.arange(0, mm, 600)
+    else:
+        xticks = np.arange(0, mm, 600*5)
+    xlabels = [f'{x:.0f}' for x in xticks/600]
+    plt.xticks(xticks, labels=xlabels)
+    plt.grid()
     plt.savefig('yolo/resultsFig3.png')
 #    plt.show()
 

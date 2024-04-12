@@ -1,5 +1,6 @@
 const { app, BrowserWindow , ipcMain} = require('electron/main')
 const path = require('node:path')
+const fs = require('fs')
 const { dialog } = require('electron')
 const { PythonShell } = require('python-shell')
 
@@ -14,6 +15,29 @@ async function handleVideoFileOpen() {
   })
   if (!canceled) {
     return filePaths[0]
+  }
+}
+
+async function handleCSVFileSave() {
+  const  filePath = dialog.showSaveDialogSync(null,{
+    title: 'ファイル保存',
+    defaultPath: 'bird.csv',
+    properties: ['showOverwriteConfirmation']
+  })
+  if (filePath === undefined) {
+    return ({status: undefined})
+  }
+  try {
+    const data = fs.readFileSync('yolo/birdstatus.csv')
+    fs.writeFileSync(filePath, data)
+    return ({
+      status: true,
+      path: filePath
+    })
+  }
+  catch (error) {
+    console.log(error.message)
+    return ({status: false})
   }
 }
 
@@ -61,7 +85,8 @@ const createWindow = () => {
 }
 
 app.whenReady().then(() => {
-  ipcMain.handle('dialog:openFile', handleVideoFileOpen)
+  ipcMain.handle('dialog:openVideoFile', handleVideoFileOpen)
+  ipcMain.handle('dialog:saveCSVFile', handleCSVFileSave)
   ipcMain.handle('python:detect', birdDetect)
   ipcMain.handle('python:analyze', birdAnalyze)
   createWindow()
@@ -71,7 +96,6 @@ app.whenReady().then(() => {
     }
   })
 })
-
 
 app.on('activate', () => {
   setInterval('printTime()', 1000)

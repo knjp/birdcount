@@ -15,7 +15,7 @@ function setMainVideo(videoFilePath) {
 }
 
 bt_videoSelect.addEventListener('click', async () => {
-    const videoFilePath = await window.electronAPI.selectFile()
+    const videoFilePath = await window.electronAPI.selectLoadVideoFile()
     filePathElement.innerText = videoFilePath
     const mainVideo = document.getElementById('mainVideo')
     const videoSource = document.getElementById('mainVideoSource')
@@ -23,6 +23,13 @@ bt_videoSelect.addEventListener('click', async () => {
     videoSource.setAttribute('src', 'file:' + videoFilePath)
     mainVideo.load()
     mainVideo.play()
+})
+
+const bt_csvDownload = document.getElementById('btnCSV')
+bt_csvDownload.addEventListener('click', () => {
+    const saveFilePath = window.electronAPI.saveCSVFile()
+    console.log(saveFilePath)
+    //window.electronAPI.saveCSVFile()
 })
 
 
