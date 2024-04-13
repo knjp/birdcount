@@ -28,3 +28,10 @@ for n in range(start_frame, stop_frame, step_frame):
         cv2.imwrite('{}_{}.{}'.format( base_path, str(n).zfill(digit), ext), frame)
     else:
         exit(0)
+
+####################
+####################
+src_img = cv2.imread('frame_001.png')
+hsv_img = cv2.cvtColor(src_img, cv2.COLOR_BGR2HSV_FULL)
+b = cv2.convertScaleAbs(src_img, alpha=0.4, beta=150)
+cv2.imwrite('frame_001a.png', b)
