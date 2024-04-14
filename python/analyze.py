@@ -10,12 +10,12 @@ from PIL import Image
 
 dataFileName = 'yolo/results.csv'
 csvFileName = 'yolo/birdstatus.csv'
-figflag1 = 1
-figflag2 = 1
-figflag3 = 1
-figflag4 = 1
-figflag5 = False;
-figflag6 = False;
+figflag1 = False
+figflag2 = False
+figflag3 = True
+figflag4 = True
+figflag5 = False
+figflag6 = False
 figheatmap = True
 
 def distance(p1, p2):
@@ -26,7 +26,6 @@ def distance(p1, p2):
     d = np.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
     # d = ds.cityblock(p1, p2)
     return d
-
 
 def readData(fileName):
     org_data = []
@@ -82,7 +81,8 @@ def putFig3(L, numFrame, ratio1, ratio2, ratioTotal):
     plt.grid()
     plt.savefig('yolo/resultsFig3.png')
 
-def putFig5(m):
+def putFig5(m, L):
+    t = np.arange(1, m + 1)
     MF = np.zeros(shape=(m, 4))
     MF[:, 0] = t
     MF[:,1] = medfilt(L[:,1], kernel_size=9)
@@ -110,7 +110,6 @@ def putFig6(xy):
     #dz = z.ravel()
     plt.figure(5)
     plt.scatter(mx, my, s=1, c=z)
-    #plt.show()
     plt.savefig('yolo/resultsFig6.png')
 
 def putHeatmap(xy):
@@ -151,6 +150,33 @@ def putHeatmap(xy):
     superimposed = Image.fromarray(np.uint8(superimposed))
     superimposed.save('yolo/superimposed.png')
 
+def putMixedFig(xy):
+    xy[0, 0] = 0
+    x00, y00 = np.arange(0,192, 1), np.arange(0,108, 1)
+    #mx, my = np.meshgrid(x00, y00)
+    xy2 = np.where(xy > 0.0, 250, 0)
+    heatmap0 = np.uint8(xy2)
+    heatmap = heatmap0.transpose()
+
+    extent = np.min(x00), np.max(x00), np.min(y00), np.max(y00)
+    fig = plt.figure(9, frameon=False)
+    img = Image.open('yolo/frame_001.png')
+    im1 = plt.imshow(img, cmap=plt.cm.gray, interpolation='nearest', extent=extent)
+    im2 = plt.imshow(heatmap, cmap=plt.cm.OrRd, alpha=0.6, interpolation='nearest', extent=extent)
+    plt.savefig('yolo/resultsSuper.jpg')
+
+
+def calcXY100(Bird1, Bird2):
+    xy = np.zeros((192, 108), int)
+    blen = len(Bird1)
+    for i in range(blen):
+        x0 = int(Bird1[i, 0]/10)
+        y0 = int(Bird1[i, 1]/10)
+        xy[x0, y0] += 1
+        x1 = int(Bird2[i, 0]/10)
+        y1 = int(Bird2[i, 1]/10)
+        xy[x1, y1] += 1
+    return xy
 
 def calcXY(Bird1, Bird2):
     xy = np.zeros((1920, 1080), int)
@@ -363,21 +389,21 @@ m, npdata = readData(dataFileName)
 B,C = countBirds(m, npdata)
 L3 = calcBirds(m, B, C)
 xy = calcXY(B, C)
+xy100 = calcXY100(B, C)
 
-if figflag1 == 1:
+if figflag1 == True:
     putFig1(L3)
 
-if figflag2 == 1:
+if figflag2 == True:
     putFig2(B, C)
 
-if figflag5 == True:
-    putFig5(m)
 
 if figflag6 == True:
     putFig6(xy)
 
 if figheatmap:
-    putHeatmap(xy)
+    putMixedFig(xy100)
+    #putHeatmap(xy)
 
 
 B, C = smoothData(m, B, C)
@@ -389,8 +415,5 @@ printStats(mm, tlen, ratio1, ratio2, ratioTotal)
 if figflag3 == 1:
     putFig3(BirdTable, mm, ratio1, ratio2, ratioTotal)
 
-#print('m: ' + str(m))
-#print('mm: ' + str(mm))
-#    plt.show()
-#    plt.show()
-    #plt.pause(1)
+if figflag5 == True:
+    putFig5(m, BirdTable)

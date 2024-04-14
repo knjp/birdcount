@@ -98,7 +98,7 @@ bt_analyze.addEventListener('click', function(clickEvent){
         document.getElementById('panalyze').innerHTML = '<pre>' + stats + '</pre>'
         buttonEnable()
         clearInterval(processtime)
-        img1.setAttribute('src', 'yolo/resultsFig2.png?' + new Date().getTime())
+        img1.setAttribute('src', 'yolo/resultsSuper.jpg?' + new Date().getTime())
         img2.setAttribute('src', 'yolo/resultsFig3.png?' + new Date().getTime())
         setMainVideo(strs[0])
    })
