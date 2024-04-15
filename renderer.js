@@ -52,15 +52,17 @@ const bt_quit = document.getElementById('btquit')
 function buttonDisable() {
     bt_detect.disabled = true
     bt_analyze.disabled = true
-    bt_quit.disabled = true
+    bt_csvDownload.disabled = true
     bt_videoSelect.disabled = true
+    //bt_quit.disabled = true
 }
 
 function buttonEnable() {
     bt_detect.disabled = false
     bt_analyze.disabled = false
-    bt_quit.disabled = false
     bt_videoSelect.disabled = false
+    bt_csvDownload.disabled = false
+    //bt_quit.disabled = false
 }
 
 bt_detect.addEventListener('click', function(clickEvent){

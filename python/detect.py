@@ -7,20 +7,22 @@ import csv
 import argparse
 
 videoname = 'video/abc.mp4'
-save_video = False
+#save_video = False
 
 parser = argparse.ArgumentParser(description='Detect birds from a video.')
 parser.add_argument('videofilename', help='Name of the video file', nargs='?', default=videoname)
+parser.add_argument('--save_video', help='Save the video file', action='store_true')
 args = parser.parse_args()
 
 os.chdir('yolo')
 dirbase = './'
 detection_model = YOLO('model/best.pt')
 source_path = args.videofilename
+save_video = args.save_video
 time1 = time.time()
 dt_start = datetime.datetime.now()
 print('YOLO starts at ' + str(dt_start))
-results = detection_model.track(source=source_path, save=save_video,
+results = detection_model.track(source=source_path, save=save_video, 
                                 #, device=0, save=False,
 #                                conf=float(values['detection_conf_thres']),
 #                                iou=float(values['detection_iou_thres']),
@@ -34,7 +36,6 @@ results = detection_model.track(source=source_path, save=save_video,
                                 verbose=False,
 #                                save_crop=True
                                 )
-
 
 csv1 = open('results.csv', 'w', encoding='utf-8', newline='')
 #csv2 = open('results2.csv', 'w', encoding='utf-8', newline='')

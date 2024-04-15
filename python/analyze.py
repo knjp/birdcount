@@ -7,16 +7,21 @@ from datetime import timedelta
 from matplotlib import cm
 from matplotlib import colormaps as cm2
 from PIL import Image
+import cv2
 
 dataFileName = 'yolo/results.csv'
 csvFileName = 'yolo/birdstatus.csv'
 figflag1 = False
-figflag2 = False
+figflag2 = True
 figflag3 = True
 figflag4 = True
 figflag5 = False
 figflag6 = False
 figheatmap = True
+figSizeX = 1920
+figSizeY = 1080
+figReduceRatioX = 15
+figReduceRatioY = 15
 
 def distance(p1, p2):
     x1 = p1[0]
@@ -27,6 +32,17 @@ def distance(p1, p2):
     # d = ds.cityblock(p1, p2)
     return d
 
+def cutFirstFrame(videoFielName):
+    cap = cv2.VideoCapture(videoFielName)
+    if not cap.isOpened():
+        exit(1)
+    cap.set(cv2.CAP_PROP_POS_FRAMES, 1)
+    ret, frame = cap.read()
+    if ret:
+        cv2.imwrite('{}_{}.{}'.format('yolo/frame', '001', 'png'), frame)
+    else:
+        exit(1)
+
 def readData(fileName):
     org_data = []
     with open(fileName) as csvf:
@@ -36,6 +52,7 @@ def readData(fileName):
 
     fvideo = videoFileName.split()
     print(fvideo[2] + ",")
+    cutFirstFrame(fvideo[2])
     df_data = pd.DataFrame(org_data)
     data = df_data.to_numpy()
     m = int(data[-1,0])
@@ -57,7 +74,7 @@ def putFig2(Bird1, Bird2):
     plt.plot(Bird1[:, 0], 1024 - Bird1[:, 1], '.', label="Bird1")
     plt.plot(Bird2[:, 0], 1024 - Bird2[:, 1], '.', label="Bird2")
     plt.legend()
-    plt.axis([0, 1920, 0, 1024])
+    plt.axis([0, figSizeX, 0, figSizeY])
     plt.xlabel('Width (pixel)')
     plt.ylabel('Height (pixel)')
     plt.savefig('yolo/resultsFig2.png')
@@ -100,7 +117,7 @@ def putFig5(m, L):
 
 def putFig6(xy):
     xy[0, 0] = 0
-    x00, y00 = np.arange(0,1920, 1), np.arange(0,1080, 1)
+    x00, y00 = np.arange(0,figSizeX, 1), np.arange(0,figSizeY, 1)
     mx, my = np.meshgrid(x00, y00)
     z = xy[mx,my]
     #xpos = mx.ravel()
@@ -114,7 +131,7 @@ def putFig6(xy):
 
 def putHeatmap(xy):
     xy[0, 0] = 0
-    x00, y00 = np.arange(0,1920, 1), np.arange(0,1080, 1)
+    x00, y00 = np.arange(0,figSizeX, 1), np.arange(0,figSizeY, 1)
     mx, my = np.meshgrid(x00, y00)
     maxz = np.max(xy) 
     #xy = (xy/maxz) * 255
@@ -143,43 +160,49 @@ def putHeatmap(xy):
     hmmax = np.max(jet_heatmap)
     jhm = jet_heatmap/hmmax * 255
     jet_heatmap = Image.fromarray(np.uint8(jhm))
-    jet_heatmap = jet_heatmap.resize((1920, 1080))
+    jet_heatmap = jet_heatmap.resize((figSizeX, figSizeY))
     jet_heatmap = np.asarray(jet_heatmap)
 
     superimposed = jet_heatmap * .2 + img
     superimposed = Image.fromarray(np.uint8(superimposed))
     superimposed.save('yolo/superimposed.png')
 
-def putMixedFig(xy):
-    xy[0, 0] = 0
-    x00, y00 = np.arange(0,192, 1), np.arange(0,108, 1)
-    #mx, my = np.meshgrid(x00, y00)
-    xy2 = np.where(xy > 0.0, 250, 0)
-    heatmap0 = np.uint8(xy2)
-    heatmap = heatmap0.transpose()
+def putMixedFig(xy1, xy2):
+    xy1[0, 0] = 0
+    xy2[0, 0] = 0
+    x00, y00 = np.arange(0,int(figSizeX/figReduceRatioX), 1), np.arange(0,int(figSizeY/figReduceRatioY), 1)
+    exy1 = np.where(xy1 > 0.0, 250, 0)
+    exy2 = np.where(xy2 > 0.0, 250, 0)
+    location1 = np.uint8(exy1).transpose()
+#    location1 = location1.transpose()
+    location2 = np.uint8(exy2).transpose()
 
     extent = np.min(x00), np.max(x00), np.min(y00), np.max(y00)
     fig = plt.figure(9, frameon=False)
     img = Image.open('yolo/frame_001.png')
     im1 = plt.imshow(img, cmap=plt.cm.gray, interpolation='nearest', extent=extent)
-    im2 = plt.imshow(heatmap, cmap=plt.cm.OrRd, alpha=0.6, interpolation='nearest', extent=extent)
+    im2 = plt.imshow(location1, cmap=plt.cm.GnBu, alpha=0.6, interpolation='nearest', extent=extent)
+    im3 = plt.imshow(location2, cmap=plt.cm.Reds, alpha=0.4, interpolation='nearest', extent=extent)
     plt.savefig('yolo/resultsSuper.jpg')
 
 
 def calcXY100(Bird1, Bird2):
-    xy = np.zeros((192, 108), int)
+    sizeX = int(figSizeX/figReduceRatioX)
+    sizeY = int(figSizeY/figReduceRatioY)
+    xy1 = np.zeros((sizeX, sizeY), int)
+    xy2 = np.zeros((sizeX, sizeY), int)
     blen = len(Bird1)
     for i in range(blen):
-        x0 = int(Bird1[i, 0]/10)
-        y0 = int(Bird1[i, 1]/10)
-        xy[x0, y0] += 1
-        x1 = int(Bird2[i, 0]/10)
-        y1 = int(Bird2[i, 1]/10)
-        xy[x1, y1] += 1
-    return xy
+        x0 = int(Bird1[i, 0]/figReduceRatioX)
+        y0 = int(Bird1[i, 1]/figReduceRatioY)
+        xy1[x0, y0] += 1
+        x1 = int(Bird2[i, 0]/figReduceRatioX)
+        y1 = int(Bird2[i, 1]/figReduceRatioY)
+        xy2[x1, y1] += 1
+    return xy1, xy2
 
 def calcXY(Bird1, Bird2):
-    xy = np.zeros((1920, 1080), int)
+    xy = np.zeros((figSizeX, figSizeY), int)
     blen = len(Bird1)
     h5 = 1
     w5 = h5 * 3
@@ -389,7 +412,7 @@ m, npdata = readData(dataFileName)
 B,C = countBirds(m, npdata)
 L3 = calcBirds(m, B, C)
 xy = calcXY(B, C)
-xy100 = calcXY100(B, C)
+xy1, xy2 = calcXY100(B, C)
 
 if figflag1 == True:
     putFig1(L3)
@@ -402,7 +425,7 @@ if figflag6 == True:
     putFig6(xy)
 
 if figheatmap:
-    putMixedFig(xy100)
+    putMixedFig(xy1, xy2)
     #putHeatmap(xy)
 
 
