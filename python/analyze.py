@@ -80,22 +80,39 @@ def putFig2(Bird1, Bird2):
     plt.savefig('yolo/resultsFig2.png')
 
 def putFig3(L, numFrame, ratio1, ratio2, ratioTotal):
-    plt.figure(3)
-    plt.plot(L[:, 0], L[:, 1] + 0.03, '-', label="Bird1: " + "{:.2f}".format(ratio1) + "%", linewidth=1.0)
-    plt.plot(L[:, 0], L[:, 2], '-', label="Bird2: " + "{:.2f}".format(ratio2) + "%", linewidth=1.0)
-    plt.plot(L[:, 0], L[:, 3] + 0.05, '-', label="Total: " + "{:.2f}".format(ratioTotal) + "%", linewidth=0.5)
-    plt.legend()
-    plt.xlabel("Time [min]")
-    plt.ylabel("Bird Count")
-    plt.axis([0, numFrame, 0, 3])
-    plt.yticks(np.arange(0, 3, 1))
     if numFrame/600 < 10:
         xticks = np.arange(0, numFrame, 600)
     else:
         xticks = np.arange(0, numFrame, 600*5)
     xlabels = [f'{x:.0f}' for x in xticks/600]
+
+    plt.figure(3)
+    ax1 = plt.subplot(3,1,1)
+    plt.plot(L[:, 0], L[:, 1], '-', label="Bird1: " + "{:.2f}".format(ratio1) + "%", linewidth=2.0, color='tab:blue')
+    plt.ylabel("Bird 1")
+    plt.tick_params('x', labelbottom=False)
+    plt.legend()
+    plt.grid()
+
+    ax2 = plt.subplot(3,1,2, sharex=ax1, sharey=ax1)
+    plt.plot(L[:, 0], L[:, 2], '-', label="Bird2: " + "{:.2f}".format(ratio2) + "%", linewidth=2.0, color='tab:red')
+    plt.axis([0, numFrame, 0, 1.2])
+    plt.yticks(np.arange(0, 2, 1))
+    plt.xticks(xticks, labels=xlabels)
+    plt.tick_params('x', labelbottom=False)
+    plt.ylabel("Bird 2")
+    plt.legend()
+    plt.grid()
+
+    ax3 = plt.subplot(3,1,3, sharex=ax1)
+    plt.plot(L[:, 0], L[:, 3], '-', label="Total: " + "{:.2f}".format(ratioTotal) + "%", linewidth=2.0, color='tab:gray')
+    plt.legend()
+    plt.axis([0, numFrame, 0, 2.2])
+    plt.yticks(np.arange(0, 3, 1))
     plt.xticks(xticks, labels=xlabels)
     plt.grid()
+    plt.xlabel("Time [min]")
+    plt.ylabel("Total")
     plt.savefig('yolo/resultsFig3.png')
 
 def putFig5(m, L):
