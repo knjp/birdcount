@@ -33,16 +33,25 @@ bt_csvDownload.addEventListener('click', () => {
 })
 
 
-var ptime = 0
+var atime = 0
+var dtime = 0
+var detecting = false
 function printTime(){
     var now = new Date()
     var year = now.getFullYear()
     var month = now.getMonth()
     const ct = document.getElementById('ctime')
     ct.innerHTML = now.toLocaleTimeString()
-    ptime = ptime + 1
-    const pt = document.getElementById('ptime')
-    pt.innerHTML = ptime + 's'
+    if(detecting == true){
+        dtime = dtime + 1
+        const pt = document.getElementById('dtime')
+        pt.innerHTML = dtime + 's'
+    }
+    else{
+        atime = atime + 1
+        const pt = document.getElementById('atime')
+        pt.innerHTML = atime + 's'
+    }
 }
 
 const bt_detect = document.getElementById('bt001')
@@ -67,7 +76,8 @@ function buttonEnable() {
 
 bt_detect.addEventListener('click', function(clickEvent){
     buttonDisable()
-    ptime = 0
+    dtime = 0
+    detecting = true
     var processtime = setInterval(printTime, 1000)
     videoFileName = document.getElementById('videoFilePath').innerText
     document.getElementById('pdetect').innerHTML = 'Now detecting from ' + videoFileName
@@ -79,6 +89,7 @@ bt_detect.addEventListener('click', function(clickEvent){
         datas = dstrs[0] + '<br>' + dstrs[1] + '<br>' + dstrs[2] + '<br>' + dstrs[3]
         document.getElementById('pdetect').innerHTML = '<pre>' + datas + '</pre>'
         buttonEnable()
+        detecting = false
         clearInterval(processtime)
     })
 })
@@ -89,7 +100,7 @@ bt_analyze.addEventListener('click', function(clickEvent){
     img1.setAttribute('src', '')
     img2.setAttribute('src', '')
     buttonDisable()
-    ptime = 0
+    atime = 0
     var processtime = setInterval(printTime, 1000)
     document.getElementById('panalyze').innerHTML = ''
     const message = window.runpython.analyze({"send_data":"analyze"})

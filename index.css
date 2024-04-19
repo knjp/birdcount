@@ -47,7 +47,7 @@ p#info {
     background-color: honeydew;
 }
 
-p#ctime, p#ptime, p#pdetect, p#panalyze {
+p#ctime, p#dtime, p#atime, p#pdetect, p#panalyze {
     display: inline;
     color:crimson
 }

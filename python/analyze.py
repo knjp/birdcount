@@ -81,14 +81,16 @@ def putFig2(Bird1, Bird2):
 
 def putFig3(L, numFrame, ratio1, ratio2, ratioTotal):
     if numFrame/600 < 10:
-        xticks = np.arange(0, numFrame, 600)
+        xticks = np.arange(0, numFrame, 300)
     else:
         xticks = np.arange(0, numFrame, 600*5)
-    xlabels = [f'{x:.0f}' for x in xticks/600]
+    xlabels = [f'{x:.1f}' for x in xticks/600]
 
     plt.figure(3)
     ax1 = plt.subplot(3,1,1)
     plt.plot(L[:, 0], L[:, 1], '-', label="Bird1: " + "{:.2f}".format(ratio1) + "%", linewidth=2.0, color='tab:blue')
+    plt.axis([0, numFrame, 0, 1.2])
+    plt.yticks(np.arange(0, 2, 1))
     plt.ylabel("Bird 1")
     plt.tick_params('x', labelbottom=False)
     plt.legend()
@@ -96,8 +98,6 @@ def putFig3(L, numFrame, ratio1, ratio2, ratioTotal):
 
     ax2 = plt.subplot(3,1,2, sharex=ax1, sharey=ax1)
     plt.plot(L[:, 0], L[:, 2], '-', label="Bird2: " + "{:.2f}".format(ratio2) + "%", linewidth=2.0, color='tab:red')
-    plt.axis([0, numFrame, 0, 1.2])
-    plt.yticks(np.arange(0, 2, 1))
     plt.xticks(xticks, labels=xlabels)
     plt.tick_params('x', labelbottom=False)
     plt.ylabel("Bird 2")
@@ -198,8 +198,8 @@ def putMixedFig(xy1, xy2):
     fig = plt.figure(9, frameon=False)
     img = Image.open('yolo/frame_001.png')
     im1 = plt.imshow(img, cmap=plt.cm.gray, interpolation='nearest', extent=extent)
-    im2 = plt.imshow(location1, cmap=plt.cm.GnBu, alpha=0.6, interpolation='nearest', extent=extent)
-    im3 = plt.imshow(location2, cmap=plt.cm.Reds, alpha=0.4, interpolation='nearest', extent=extent)
+    im3 = plt.imshow(location2, cmap=plt.cm.Reds, alpha=0.8, interpolation='nearest', extent=extent)
+    im2 = plt.imshow(location1, cmap=plt.cm.GnBu, alpha=0.5, interpolation='nearest', extent=extent)
     plt.savefig('yolo/resultsSuper.jpg')
 
 
