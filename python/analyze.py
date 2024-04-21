@@ -13,10 +13,11 @@ dataFileName = 'yolo/results.csv'
 csvFileName = 'yolo/birdstatus.csv'
 
 flagFig1 = False
-flagFigTime = True
-flagFig4 = False
-flagFig5 = False
+flagFig2 = False
+flagFig3 = False
 flagFigheatmap = False
+
+flagFigTime = True
 flagFigScatter = True
 flagMixedFig = True
 
@@ -70,7 +71,7 @@ def putFig1(allBirds):
     plt.savefig('yolo/resultsFig1.png')
 
 def putFigScatter(Bird1, Bird2):
-    plt.figure(2)
+    plt.figure()
     #plt.plot(B[:, 0], 1 - B[:, 1], '.', label="bird1")
     #plt.plot(C[:, 0], 1 - C[:, 1], '.', label="bird2")
     plt.plot(Bird1[:, 0], 1024 - Bird1[:, 1], '.', label="Bird1")
@@ -88,7 +89,7 @@ def putFigTime(L, numFrame, ratio1, ratio2, ratioTotal):
         xticks = np.arange(0, numFrame, 600*5)
     xlabels = [f'{x:.1f}' for x in xticks/600]
 
-    plt.figure(3)
+    plt.figure()
     ax1 = plt.subplot(3,1,1)
     plt.plot(L[:, 0], L[:, 1], '-', label="Bird1: " + "{:.2f}".format(ratio1) + "%", linewidth=2.0, color='tab:blue')
     plt.axis([0, numFrame, 0, 1.2])
@@ -117,14 +118,14 @@ def putFigTime(L, numFrame, ratio1, ratio2, ratioTotal):
     plt.ylabel("Total")
     plt.savefig('yolo/resultsFigTime.png')
 
-def putFig4(m, L):
+def putFig2(m, L):
     t = np.arange(1, m + 1)
     MF = np.zeros(shape=(m, 4))
     MF[:, 0] = t
     MF[:,1] = medfilt(L[:,1], kernel_size=9)
     MF[:,2] = medfilt(L[:,2], kernel_size=9)
     MF[:,3] = medfilt(L[:,3], kernel_size=9)
-    plt.figure(5)
+    plt.figure(2)
     plt.plot(MF[:, 0], MF[:, 1] + 0.03, '.-', label="bird1")
     plt.plot(MF[:, 0], MF[:, 2], '.-', label="bird2")
     plt.plot(MF[:, 0], MF[:, 3], '.-', label="Total")
@@ -132,9 +133,9 @@ def putFig4(m, L):
     plt.xlabel("frame")
     plt.ylabel("Bird Count")
     plt.axis([0, m, 0, 3])
-    plt.savefig('yolo/resultsFig4.png')
+    plt.savefig('yolo/resultsFig2.png')
 
-def putFig5(xy):
+def putFig3(xy):
     xy[0, 0] = 0
     x00, y00 = np.arange(0,figSizeX, 1), np.arange(0,figSizeY, 1)
     mx, my = np.meshgrid(x00, y00)
@@ -144,9 +145,9 @@ def putFig5(xy):
     #zpos = 0
     #dx = dy = np.ones_like(zpos)
     #dz = z.ravel()
-    plt.figure(5)
+    plt.figure(3)
     plt.scatter(mx, my, s=1, c=z)
-    plt.savefig('yolo/resultsFig5.png')
+    plt.savefig('yolo/resultsFig3.png')
 
 def putHeatmap(xy):
     xy[0, 0] = 0
@@ -436,12 +437,12 @@ if flagFig1 == True:
     L3 = calcBirds(m, B, C)
     putFig1(L3)
 
-if flagFig4 == True:
-    putFig4(m, BirdTable)
+if flagFig2 == True:
+    putFig2(m, BirdTable)
 
-if flagFig5 == True:
+if flagFig3 == True:
     xy = calcXY(B, C)
-    putFig5(xy)
+    putFig3(xy)
 
 if flagFigheatmap:
     xy = calcXY(B, C)
