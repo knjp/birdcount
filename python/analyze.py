@@ -11,13 +11,15 @@ import cv2
 
 dataFileName = 'yolo/results.csv'
 csvFileName = 'yolo/birdstatus.csv'
-figflag1 = False
-figflag2 = True
-figflag3 = True
-figflag4 = True
-figflag5 = False
-figflag6 = False
-figheatmap = True
+
+flagFig1 = False
+flagFigTime = True
+flagFig4 = False
+flagFig5 = False
+flagFigheatmap = False
+flagFigScatter = True
+flagMixedFig = True
+
 figSizeX = 1920
 figSizeY = 1080
 figReduceRatioX = 15
@@ -67,7 +69,7 @@ def putFig1(allBirds):
     plt.axis([0, m, 0, 3])
     plt.savefig('yolo/resultsFig1.png')
 
-def putFig2(Bird1, Bird2):
+def putFigScatter(Bird1, Bird2):
     plt.figure(2)
     #plt.plot(B[:, 0], 1 - B[:, 1], '.', label="bird1")
     #plt.plot(C[:, 0], 1 - C[:, 1], '.', label="bird2")
@@ -77,9 +79,9 @@ def putFig2(Bird1, Bird2):
     plt.axis([0, figSizeX, 0, figSizeY])
     plt.xlabel('Width (pixel)')
     plt.ylabel('Height (pixel)')
-    plt.savefig('yolo/resultsFig2.png')
+    plt.savefig('yolo/resultsFigScatter.png')
 
-def putFig3(L, numFrame, ratio1, ratio2, ratioTotal):
+def putFigTime(L, numFrame, ratio1, ratio2, ratioTotal):
     if numFrame/600 < 10:
         xticks = np.arange(0, numFrame, 300)
     else:
@@ -113,9 +115,9 @@ def putFig3(L, numFrame, ratio1, ratio2, ratioTotal):
     plt.grid()
     plt.xlabel("Time [min]")
     plt.ylabel("Total")
-    plt.savefig('yolo/resultsFig3.png')
+    plt.savefig('yolo/resultsFigTime.png')
 
-def putFig5(m, L):
+def putFig4(m, L):
     t = np.arange(1, m + 1)
     MF = np.zeros(shape=(m, 4))
     MF[:, 0] = t
@@ -130,9 +132,9 @@ def putFig5(m, L):
     plt.xlabel("frame")
     plt.ylabel("Bird Count")
     plt.axis([0, m, 0, 3])
-    plt.savefig('yolo/resultsFig5.png')
+    plt.savefig('yolo/resultsFig4.png')
 
-def putFig6(xy):
+def putFig5(xy):
     xy[0, 0] = 0
     x00, y00 = np.arange(0,figSizeX, 1), np.arange(0,figSizeY, 1)
     mx, my = np.meshgrid(x00, y00)
@@ -144,7 +146,7 @@ def putFig6(xy):
     #dz = z.ravel()
     plt.figure(5)
     plt.scatter(mx, my, s=1, c=z)
-    plt.savefig('yolo/resultsFig6.png')
+    plt.savefig('yolo/resultsFig5.png')
 
 def putHeatmap(xy):
     xy[0, 0] = 0
@@ -159,7 +161,7 @@ def putHeatmap(xy):
     ax = plt.figure(4).add_subplot(projection='3d')
     #ax.plot_surface(mx, 1080-my, z, cmap= cm.coolwarm)
     ax.plot_surface(mx, 1080-my, z2, cmap=cm.binary)
-    plt.savefig('yolo/resultsFig4.png')
+    plt.savefig('yolo/results3D.png')
     #ax.set(zlim=(0,1))
 
     xy2 = np.where(xy > 0.0, 200, 0)
@@ -168,7 +170,7 @@ def putHeatmap(xy):
     heatmap = heatmap0.transpose()
     #heatmap[:,1] = heatmap[:,1]
     hmimage = Image.fromarray(heatmap)
-    hmimage.save('yolo/heatmap.png')
+    hmimage.save('yolo/resultsHeatmap.png')
 
     img = Image.open('yolo/frame_001.png')
     jet = cm2.get_cmap("jet")
@@ -182,7 +184,7 @@ def putHeatmap(xy):
 
     superimposed = jet_heatmap * .2 + img
     superimposed = Image.fromarray(np.uint8(superimposed))
-    superimposed.save('yolo/superimposed.png')
+    superimposed.save('yolo/resultsSuperimposed.png')
 
 def putMixedFig(xy1, xy2):
     xy1[0, 0] = 0
@@ -424,36 +426,36 @@ def makeCSV(fileName, m, L):
     L1_data_pd = pd.concat([t1_str_pd, L1_pd], axis=1)
     L1_data_pd.to_csv(fileName, header=False, index=False)
 
-
 m, npdata = readData(dataFileName)
 B,C = countBirds(m, npdata)
-L3 = calcBirds(m, B, C)
-xy = calcXY(B, C)
-xy1, xy2 = calcXY100(B, C)
-
-if figflag1 == True:
-    putFig1(L3)
-
-if figflag2 == True:
-    putFig2(B, C)
-
-
-if figflag6 == True:
-    putFig6(xy)
-
-if figheatmap:
-    putMixedFig(xy1, xy2)
-    #putHeatmap(xy)
-
-
 B, C = smoothData(m, B, C)
 BirdTable = makeTable(m, B, C)
-makeCSV(csvFileName, m, BirdTable)
 mm, tlen, ratio1, ratio2, ratioTotal = calcRatios(BirdTable)
+
+if flagFig1 == True:
+    L3 = calcBirds(m, B, C)
+    putFig1(L3)
+
+if flagFig4 == True:
+    putFig4(m, BirdTable)
+
+if flagFig5 == True:
+    xy = calcXY(B, C)
+    putFig5(xy)
+
+if flagFigheatmap:
+    xy = calcXY(B, C)
+    putHeatmap(xy)
+
+if flagFigScatter == True:
+    putFigScatter(B, C)
+
+if flagFigTime == True:
+    putFigTime(BirdTable, mm, ratio1, ratio2, ratioTotal)
+
+if flagMixedFig:
+    xy1, xy2 = calcXY100(B, C)
+    putMixedFig(xy1, xy2)
+
+makeCSV(csvFileName, m, BirdTable)
 printStats(mm, tlen, ratio1, ratio2, ratioTotal)
-
-if figflag3 == 1:
-    putFig3(BirdTable, mm, ratio1, ratio2, ratioTotal)
-
-if figflag5 == True:
-    putFig5(m, BirdTable)

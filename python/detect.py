@@ -7,7 +7,8 @@ import csv
 import argparse
 
 videoname = 'video/abc.mp4'
-#save_video = False
+pwd = os.getcwd()
+videoname = pwd + '/yolo/' + videoname
 
 parser = argparse.ArgumentParser(description='Detect birds from a video.')
 parser.add_argument('videofilename', help='Name of the video file', nargs='?', default=videoname)
