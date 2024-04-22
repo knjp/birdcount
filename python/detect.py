@@ -7,8 +7,8 @@ import csv
 import argparse
 
 videoname = 'video/abc.mp4'
-pwd = os.getcwd()
-videoname = pwd + '/yolo/' + videoname
+#pwd = os.getcwd()
+#videoname = pwd + '/yolo/' + videoname
 
 parser = argparse.ArgumentParser(description='Detect birds from a video.')
 parser.add_argument('videofilename', help='Name of the video file', nargs='?', default=videoname)
@@ -18,7 +18,7 @@ args = parser.parse_args()
 os.chdir('yolo')
 dirbase = './'
 detection_model = YOLO('model/best.pt')
-source_path = args.videofilename
+source_path = os.path.abspath(args.videofilename)
 save_video = args.save_video
 time1 = time.time()
 dt_start = datetime.datetime.now()
