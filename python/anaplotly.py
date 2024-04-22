@@ -138,9 +138,9 @@ def calcXY100(Bird1, Bird2):
 def calcXX(Bird1, Bird2):
     blen = len(Bird1) 
     mm = np.zeros([blen + 2, 3])
-    for i in range(blen):
-        x0 = int(Bird1[i, 0])
-        y0 = figSizeY - int(Bird1[i, 1])
+    for i in range(0, blen, 10):
+        x0 = int(Bird1[i, 0]/figReduceRatioX)
+        y0 = figSizeY/figReduceRatioY - int(Bird1[i, 1]/figReduceRatioY)
         x1 = int(Bird2[i, 0])
         y1 = int(Bird2[i, 1])
         #xx[i] = x1
@@ -149,7 +149,7 @@ def calcXX(Bird1, Bird2):
         time = i/600
         mm[i, :] = [time, x0, y0]
     mm[blen,:] = [blen/600, 0, 0]
-    mm[blen+1,:] = [(blen+1)/600, figSizeX, figSizeY]
+    mm[blen+1,:] = [(blen+1)/600, figSizeX/figReduceRatioX, figSizeY/figReduceRatioY]
     return mm
 
 def putFig3d(mm):
