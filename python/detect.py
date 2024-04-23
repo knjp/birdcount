@@ -2,13 +2,12 @@ from ultralytics import YOLO
 import time
 import datetime
 import os
+import shutil
 import sys
 import csv
 import argparse
 
 videoname = 'video/abc.mp4'
-#pwd = os.getcwd()
-#videoname = pwd + '/yolo/' + videoname
 
 parser = argparse.ArgumentParser(description='Detect birds from a video.')
 parser.add_argument('videofilename', help='Name of the video file', nargs='?', default=videoname)
@@ -20,6 +19,34 @@ dirbase = './'
 detection_model = YOLO('model/best.pt')
 source_path = os.path.abspath(args.videofilename)
 save_video = args.save_video
+
+print(save_video)
+
+def saveVideoFile():
+    SAVE_DIR = "outputs"
+    VIDEO_DIR = "runs/detect/track"
+    VIDEO_NAME = SAVE_DIR + '/output.avi'
+
+    if not os.path.exists(SAVE_DIR):
+        os.makedirs(SAVE_DIR)
+
+    if os.path.exists(VIDEO_NAME):
+        os.remove(VIDEO_NAME)
+
+    if not os.path.exists(VIDEO_DIR):
+        exit(0)
+
+    files = os.listdir(VIDEO_DIR)
+    if len(files) == 1:
+        videoFileName = VIDEO_DIR + '/' + files[0]
+        new_filename = shutil.move(videoFileName, VIDEO_NAME)
+
+    files = os.listdir(VIDEO_DIR)
+    if len(files) == 0:
+        os.rmdir(VIDEO_DIR)
+
+
+
 time1 = time.time()
 dt_start = datetime.datetime.now()
 print('YOLO starts at ' + str(dt_start))
@@ -39,7 +66,6 @@ results = detection_model.track(source=source_path, save=save_video,
                                 )
 
 csv1 = open('results.csv', 'w', encoding='utf-8', newline='')
-#csv2 = open('results2.csv', 'w', encoding='utf-8', newline='')
 resfile = open('all-results.txt', 'w', encoding='utf-8', newline='')
 
 cwriter1 = csv.writer(csv1)
@@ -83,7 +109,6 @@ for rone in results:
 
 
 csv1.close()
-#csv2.close()
 resfile.close()
 
 time2 = time.time()
@@ -94,52 +119,5 @@ print('Start Time: ' + str(dt_start))
 print(  'End   Time: ' + str(dt_end))
 print(  'Exec  Time: ' + "{:.3f}".format(dtime) + ' sec')
 
-exit(0)
-
-# with open('results90.csv', 'w', encoding='utf-8', newline='') as cfile:
-#     cwriter = csv.writer(cfile)
-#     c = 0;
-#     for rone in results:
-#         c += 1
-#         for object in rone.boxes:
-#             #print("object.numpy():")
-#             #print(object.xywh.cpu().numpy())
-#             xywh = object.xywhn.cpu().numpy()
-#             x = xywh[0,0]
-#             y = xywh[0,1]
-#             w = xywh[0,2]
-#             h = xywh[0,3]
-#             if object.id != None:
-#                 id = int(object.id.cpu().numpy()[0])
-#             else:
-#                 id = 0
-#             ob = [c, id, x, y, w, h]
-#             cwriter.writerow(ob)
-
-# with open('results92.csv', 'w', encoding='utf-8', newline='') as cfile:
-#     cwriter = csv.writer(cfile)
-#     c = 0;
-#     for rone in results:
-#         c += 1
-#         for object in rone.boxes:
-#             xyxy = object.xyxyn.cpu().numpy()
-#             x1 = xyxy[0,0]
-#             y1 = xyxy[0,1]
-#             x2 = xyxy[0,2]
-#             y2 = xyxy[0,3]
-#             if object.id != None:
-#                 id = int(object.id.cpu().numpy()[0])
-#             else:
-#                 id = int(0)
-#             ob = [c, id, x1, y1, x2, y2]
-#             cwriter.writerow(ob)
-
-with open('results.txt', 'w', encoding='utf-8', newline='') as tfile:
-    c = 0;
-    for rone in results:
-        c += 1
-        cstr = '++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n' + 'c = ' + str(c) + '\n'
-        tfile.write(cstr)
-        for object in rone.boxes:
-            rstr = str(object) + '\n'
-            tfile.write(rstr)
+if save_video:
+    saveVideoFile()

@@ -51,7 +51,12 @@ const options = {
 
 async function birdDetect(event, data) {
   fname = data.filename
-  options.args = [fname]
+  saveVideo = data.saveVideo
+  if(saveVideo === true)
+    options.args = [fname, '--save_video']
+  else
+    options.args = [fname]
+
   PythonShell.run('detect.py', options)
       .then((response)=>{
       event.sender.send("return_data", response);
@@ -62,6 +67,7 @@ async function birdDetect(event, data) {
 }
 
 async function birdAnalyze(event, data) {
+  options.args = []
   PythonShell.run('analyze.py', options)
       .then((response)=>{
       event.sender.send("return_data", response);
@@ -73,8 +79,8 @@ async function birdAnalyze(event, data) {
 
 const createWindow = () => {
   const win = new BrowserWindow({
-    width: 1000,
-    height: 800,
+    width: 1200,
+    height: 1000,
     webPreferences: {
         preload: path.join(__dirname, 'preload.js')
     }

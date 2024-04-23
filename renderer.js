@@ -81,11 +81,10 @@ bt_detect.addEventListener('click', function(clickEvent){
     var processtime = setInterval(printTime, 1000)
     videoFileName = document.getElementById('videoFilePath').innerText
     document.getElementById('pdetect').innerHTML = 'Now detecting from ' + videoFileName
-    const message = window.runpython.detect({"filename": videoFileName})
+    saveVideo = document.getElementById('saveVideoCheck')
+    const message = window.runpython.detect({"filename": videoFileName, "saveVideo": saveVideo.checked})
     const message2 = window.runpython.on("return_data", async(data)=>{
         dstrs = String(data).split(',')
-        console.log('hello')
-        console.log(dstrs)
         datas = dstrs[0] + '<br>' + dstrs[1] + '<br>' + dstrs[2] + '<br>' + dstrs[3]
         document.getElementById('pdetect').innerHTML = '<pre>' + datas + '</pre>'
         buttonEnable()
