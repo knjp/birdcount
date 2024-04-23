@@ -258,12 +258,12 @@ def printStats(mm, tlen, ratio1, ratio2, ratioTotal):
 
 def countBirds(m, npdata):
     J = np.zeros(shape=(m, 7))
-    B = np.zeros(shape=(m, 2))
-    C = np.zeros(shape=(m, 2))
 
+    numBirds =  np.zeros(m)
     for i in range(m):
-        float_i = float(i + 1)
+        #float_i = float(i + 1)
         np_data = npdata[npdata[:, 0] == str(i+1)]
+        numBirds[i] = len(np_data)
         if len(np_data) != 0:
             J[i, 0] = len(np_data) # number of birds
             len(np_data)
@@ -291,16 +291,21 @@ def countBirds(m, npdata):
                 J[i, 5] = np_data[0, 2]
                 J[i, 6] = np_data[0, 3]
 
-        m2 = len(J)
-        s1 = J[0, 1:4]
-        s2 = J[0, 4:7]
 
-        B[0, 0] = J[0, 2]
-        B[0, 1] = J[0, 3]
-        C[0, 0] = J[0, 5]
-        C[0, 1] = J[0, 6]
+        #m2 = len(J)
 
-    for i in range(1, m2):
+    B = np.zeros(shape=(m, 2))
+    C = np.zeros(shape=(m, 2))
+
+    s1 = J[0, 1:4]
+    s2 = J[0, 4:7]
+
+    B[0, 0] = J[0, 2]
+    B[0, 1] = J[0, 3]
+    C[0, 0] = J[0, 5]
+    C[0, 1] = J[0, 6]
+
+    for i in range(1, m):
         L = []
         d1 = distance(s1[1:3], J[i, 2: 4])
         d2 = distance(s1[1:3], J[i, 5: 7])
@@ -311,6 +316,8 @@ def countBirds(m, npdata):
         L.append(d3)
         L.append(d4)
         loc = L.index(np.min(L))
+        if numBirds[i] == 1:
+            loc = 0
 
         if loc == 0 or loc == 3:
             s1 = J[i, 1:4]
@@ -335,6 +342,7 @@ def countBirds(m, npdata):
             else:
                 B[i, 0] = J[i, 2]
                 B[i, 1] = J[i, 3]
+
     return B, C
 
 
