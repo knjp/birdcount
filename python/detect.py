@@ -20,8 +20,6 @@ detection_model = YOLO('model/best.pt')
 source_path = os.path.abspath(args.videofilename)
 save_video = args.save_video
 
-print(save_video)
-
 def saveVideoFile():
     SAVE_DIR = "outputs"
     VIDEO_DIR = "runs/detect/track"
