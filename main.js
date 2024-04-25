@@ -77,6 +77,18 @@ async function birdAnalyze(event, data) {
       })
 }
 
+async function subWindowOpen(event, data) {
+  const subWindow = new BrowserWindow({
+    title: 'Results of detection',
+    width: 1200,
+    height: 1000,
+    webPreferences: {
+      preload: path.join(__dirname, 'subwin/preload.js')
+    }
+  })
+  subWindow.loadFile('subwin/index.html')
+}
+
 const createWindow = () => {
   const win = new BrowserWindow({
     width: 1200,
@@ -95,6 +107,7 @@ app.whenReady().then(() => {
   ipcMain.handle('dialog:saveCSVFile', handleCSVFileSave)
   ipcMain.handle('python:detect', birdDetect)
   ipcMain.handle('python:analyze', birdAnalyze)
+  ipcMain.handle('window:analyzedVideo', subWindowOpen)
   createWindow()
   app.on('activate', ()=>{
     if (BrowserWindow.getAllWindows().length === 0){
@@ -106,3 +119,4 @@ app.whenReady().then(() => {
 app.on('activate', () => {
   setInterval('printTime()', 1000)
 })
+

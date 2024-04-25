@@ -1,0 +1,53 @@
+#ptitle {
+    text-align: center;
+    background-color:antiquewhite;
+}
+
+#videoregion {
+    align-self: center;
+}
+
+video#mainVideo {
+    width: 1000px;
+}
+
+h1#pagename {
+    font-size: 2em;
+}
+
+button {
+    font-size: 1.4em;
+    width: 18%;
+    height: 50px;
+    margin: 2%;
+}
+
+#detect_results {
+    width:60%;
+    align-self: center;
+}
+
+#analyze_results {
+    width: 60%;
+    align-self: auto;
+}
+
+p#pdetect {
+    text-align: left
+}
+
+p#panalyze {
+    text-align: left
+}
+
+p#info {
+    text-align: center;
+    color: brown;
+    text-decoration: double;
+    background-color: honeydew;
+}
+
+p#ctime, p#dtime, p#atime, p#pdetect, p#panalyze {
+    display: inline;
+    color:crimson
+}

@@ -18,16 +18,12 @@
   <body align="center">
     <div id="ptitle">
       <h1 id="pagename">
-       オガサワラカワラヒワ検出プログラム </h1>
+       検出ビデオ </h1>
     </div>
     <div align="center" id="videoregion">
       <video controls autoplay id="mainVideo">
-        <source src="file:yolo/video/abc.mp4" id="mainVideoSource" />
+        <source src="file:../yolo/outputs/output.mp4" id="mainVideoSource" />
       </video>
-    </div>
-    <div id="resultFigs" align="center">
-      <img id="resultFig1"  src="" alt="fig1">
-      <img id="resultFig2"  src="" alt="fig2">
     </div>
     <div>
       <button type="button" id="btnVideo">Select video</button>
@@ -38,11 +34,7 @@
       <p id="dtime"> 0 s </p> Analysis Time:
       <p id="atime"> 0 s </p>
     </div>
-    <div id="controlbtns">
-      <button tyoe="button" id="bt001">検出</button>
-      <button type="button" id="bt002">解析</button>
-      <button type="button" id="btnCSV" >Download</button>
-      <button type="button" id="btquit">終了</button>
+      <button type="button" id="btnclose">閉じる</button>
     </div>
     <fieldset>
       <legend>Options</legend>
@@ -52,23 +44,10 @@
       </div>
     </fieldset>
 
-    <div id="controlbtns2">
-      <button tyoe="button" id="bt011">分割</button>
-      <button type="button" id="btnOpenVideo" >結果確認</button>
-    </div>
-    <div align="center">
-    <div id="detect_results" align="center">
-      <p id="pdetect"></p>
-    </div>
-    <div id="analyze_results" align="center">
-      <p id="panalyze"></p>
-    </div>
-    </div>
-
     <div align="center">
       <p id="info"></p>
     </div>
 
   </body>
-  <script src="./renderer.js"></script>
+  <script src="./renderer2.js"></script>
 </html>

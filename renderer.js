@@ -57,6 +57,7 @@ function printTime(){
 const bt_detect = document.getElementById('bt001')
 const bt_analyze = document.getElementById('bt002')
 const bt_quit = document.getElementById('btquit')
+const bt_openvideo = document.getElementById('btnOpenVideo')
 
 function buttonDisable() {
     bt_detect.disabled = true
@@ -118,4 +119,10 @@ bt_analyze.addEventListener('click', function(clickEvent){
 
 bt_quit.addEventListener('click', function(clickEvent){
     window.close()
+})
+
+bt_openvideo.addEventListener('click', function(clickEvent){
+    const videoWindow = window.electronAPI.openVideoWindow({"send_data":"analyze"})
+    //const childWindow = window.open('https://www.google.com', 'modal')
+    //childWindow.document.write('<h1>Video</h1>')
 })
