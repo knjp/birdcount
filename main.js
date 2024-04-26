@@ -77,6 +77,17 @@ async function birdAnalyze(event, data) {
       })
 }
 
+async function birdAnaplotly(event, data) {
+  options.args = []
+  PythonShell.run('anaplotly.py', options)
+      .then((response)=>{
+      event.sender.send("return_data", response);
+      })
+      .catch((error) =>{
+          console.log(error);
+      })
+}
+
 async function subWindowOpen(event, data) {
   const subWindow = new BrowserWindow({
     title: 'Results of detection',
@@ -107,6 +118,7 @@ app.whenReady().then(() => {
   ipcMain.handle('dialog:saveCSVFile', handleCSVFileSave)
   ipcMain.handle('python:detect', birdDetect)
   ipcMain.handle('python:analyze', birdAnalyze)
+  ipcMain.handle('python:scatter3d', birdAnaplotly)
   ipcMain.handle('window:analyzedVideo', subWindowOpen)
   createWindow()
   app.on('activate', ()=>{

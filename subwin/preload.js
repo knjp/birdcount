@@ -7,8 +7,7 @@ contextBridge.exposeInMainWorld('versions', {
 })
 
 contextBridge.exposeInMainWorld('runpython', {
-  detect: async (data) => await ipcRenderer.invoke('python:detect', data),
-  analyze: async (data) => await ipcRenderer.invoke('python:analyze', data),
+  scatter3d: async (data) => await ipcRenderer.invoke('python:scatter3d', data),
   on: (channel, func) => {
     ipcRenderer.once(channel, (event,data)=>func(data))
   }
